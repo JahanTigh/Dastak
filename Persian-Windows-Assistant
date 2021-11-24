@@ -316,7 +316,10 @@ while True:
     elif 'پسورد' in skills:
         while True:
             char = string.ascii_letters + string.punctuation + string.digits
-            passw = "".join(choice(char) for x in range(randint(8,16)))
+            print(type_persian('چند رقمی باشه؟'))
+            t = input()  
+            t = int(t)          
+            passw = "".join(choice(char) for x in range(randint(t)))
             print('')
             print(passw)
             print('')
@@ -328,7 +331,10 @@ while True:
     elif 'رمز' in skills:
         while True:
             char = string.ascii_letters + string.punctuation + string.digits
-            passw = "".join(choice(char) for x in range(randint(8,16)))
+            print(type_persian('چند رقمی باشه؟'))
+            t = input()
+            t = int(t)
+            passw = "".join(choice(char) for x in range(randint(t)))
             print('')
             print(passw)
             print('')
