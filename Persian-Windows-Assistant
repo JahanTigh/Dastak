@@ -3,7 +3,8 @@ import pyautogui
 import time
 import random
 import datetime
-
+import string
+from random import *
 #------------------------------------------------
 
 #!/usr/bin/env python
@@ -275,55 +276,269 @@ while True:
 
     print(type_persian(' کار هایی که من می تونم انجام بدم ایناس:'))
     
-    print(type_persian('کتابخونه پایتون نصب کنم'))
-    
     print(type_persian('بلدم جوک هم بگم اگه هم جوک نصفه بود صفحه روکوچیک کن '))
     
     print(type_persian('بلدم تاریخ و ساعت رو بگم'))
+
+    print(type_persian('بلدم تاس بندازم'))
+
+    print(type_persian('باهات سنگ کاغذ قیچی بازی کنم'))
+
+    print(type_persian('رمز عبور قوی بسازم'))
 
     print(type_persian('فقط اگه موقع تایپ کردن دیدی حروف جابه جا شده نگران نباش من می فهمم'))
     
     print(' \U0001F609')
     
-    print(type_persian('حالا کدومو بدم؟ برام بنویس ...'))
+    print(type_persian('حالا کدومو بدم؟ شماره اش را بنویس به انگلیسی باشه لطفا مثلا 1,2 و...'))
     
-    print(type_persian('اگه خواستی دیگه ادامه ندی باید بنویسی ) خروج ('))
+    print(type_persian('هر وقت هم خواستی می تونی با من خدا حافظی کنی'))
     
     print(type_persian('  فقط وقتی کار رو انجام دادم اون پنجره ی  )hsad(  رو ببند'))
     
     skills = input()
     
-    if 'خروج' in skills :
+    if 'خدا نگهدار' in skills :
         break
     
+    elif 'خدانگهدار' in skills :
+        break
+    
+    elif 'خداحافظ' in skills :
+        break
+    
+    elif 'خدا حافظ' in skills :
+        break
+    
+    elif 'بای' in skills :
+        break
+    
+    elif 'پسورد' in skills:
+        while True:
+            char = string.ascii_letters + string.punctuation + string.digits
+            passw = "".join(choice(char) for x in range(randint(8,16)))
+            print('')
+            print(passw)
+            print('')
+            print(type_persian('اگه می خوای ادامه ندی بنویس « خروج » وگرنه بنویس که می خوای ادامه بدی'))
+            edameh = input()
+            if 'خروج' in edameh:
+                break
+
+    elif 'رمز' in skills:
+        while True:
+            char = string.ascii_letters + string.punctuation + string.digits
+            passw = "".join(choice(char) for x in range(randint(8,16)))
+            print('')
+            print(passw)
+            print('')
+            print(type_persian('اگه می خوای ادامه ندی بنویس « خروج » وگرنه بنویس که می خوای ادامه بدی'))
+            edameh = input()
+            if 'خروج' in edameh:
+                break
+
+    elif 'سنگ' in skills:
+        while True:
+            print("سنگ...")
+            print("کاغذ...")
+            print("قیچی...")
+            print(type_persian('نکته وقتی دیگه نخواستی بازی کنی »q« رو بزن'))
+            print("------------------")
+
+            randomNumber = random.randint(0, 2)
+
+            if randomNumber == 0:
+                computerMove = "سنگ" #rock
+            elif randomNumber == 1:
+                computerMove = "کاغذ" #paper
+            elif randomNumber == 2:
+                computerMove = "قیچی"#scissors
+
+            player1_wins = 0
+            player2_wins = 0
+            print(type_persian('چند دست می خوای بازی کنی؟'))
+            winning_score = input()
+            winning_score = int(winning_score)
+
+            while player1_wins < winning_score and player2_wins < winning_score:
+                print(f"player 1 : {player1_wins} player 2 : {player2_wins}")
+                print(type_persian('حرکت شما'))
+                Player_1 = input()
+                print(type_persian('حرکت کامپیوتر:'))
+                print(type_persian(computerMove))
+                Player_2 = computerMove
+
+                if Player_1 == "q" or Player_1 == "quit":
+                    break
+
+                if Player_1 == Player_2:
+                    print(type_persian('مساوی...'))
+                elif Player_1 == "سنگ":
+                    if Player_2 == "قیچی":
+                        print(type_persian('تو برنده شدی!...'))
+                        player1_wins += 1
+                    elif Player_2 == "کاغذ":
+                        print(type_persian('کامپیوتر برنده شد!...'))
+                        player2_wins += 1
+                elif Player_1 == "کاغذ":
+                    if Player_2 == "سنگ":
+                        print(type_persian('تو برنده شدی!...'))
+                        player1_wins += 1
+                    elif Player_2 == "قیچی":
+                        print(type_persian('کامپیوتر برنده شد!...'))
+                        player2_wins += 1
+                elif Player_1 == "قیچی":
+                    if Player_2 == "کاغذ":
+                        print(type_persian('تو برنده شدی!...'))
+                        player1_wins += 1
+                    elif Player_2 == "سنگ":
+                        print(type_persian('کامپیوتر برنده شد!...'))
+                        player2_wins += 1
+                else:
+                    print(type_persian('یه چیزی اشتباهه!...'))
+
+            print(type_persian('بازی تموم شد!...'))
+
+            print(f' player 1 : {player1_wins} | player 2 : {player2_wins}')
+            print(type_persian('اگه می خوای ادامه ندی بنویس « خروج » وگرنه بنویس که می خوای ادامه بدی'))
+            edameh = input()
+            if 'خروج' in edameh:
+                break
+
+
+    elif 'بازی' in skills:
+        while True:
+            print(type_persian("سنگ..."))
+            print(type_persian("کاغذ..."))
+            print(type_persian("قیچی..."))
+            print(type_persian('نکته وقتی دیگه نخواستی بازی کنی »q« رو بزن'))
+            print("------------------")
+
+            randomNumber = random.randint(0, 2)
+
+            if randomNumber == 0:
+                computerMove = "سنگ" #rock
+            elif randomNumber == 1:
+                computerMove = "کاغذ" #paper
+            elif randomNumber == 2:
+                computerMove = "قیچی"#scissors
+
+            player1_wins = 0
+            player2_wins = 0
+            print(type_persian('چند دست می خوای بازی کنی؟'))
+            winning_score = input()
+            winning_score = int(winning_score)
+
+            while player1_wins < winning_score and player2_wins < winning_score:
+                print(f"player 1 : {player1_wins} player 2 : {player2_wins}")
+                print(type_persian('حرکت شما'))
+                Player_1 = input()
+                print(type_persian('حرکت کامپیوتر:'))
+                print(type_persian(computerMove))
+                Player_2 = computerMove
+
+                if Player_1 == "q" or Player_1 == "quit":
+                    break
+
+                if Player_1 == Player_2:
+                    print(type_persian('مساوی...'))
+                elif Player_1 == "سنگ":
+                    if Player_2 == "قیچی":
+                        print(type_persian('تو برنده شدی!...'))
+                        player1_wins += 1
+                    elif Player_2 == "کاغذ":
+                        print(type_persian('کامپیوتر برنده شد!...'))
+                        player2_wins += 1
+                elif Player_1 == "کاغذ":
+                    if Player_2 == "سنگ":
+                        print(type_persian('تو برنده شدی!...'))
+                        player1_wins += 1
+                    elif Player_2 == "قیچی":
+                        print(type_persian('کامپیوتر برنده شد!...'))
+                        player2_wins += 1
+                elif Player_1 == "قیچی":
+                    if Player_2 == "کاغذ":
+                        print(type_persian('تو برنده شدی!...'))
+                        player1_wins += 1
+                    elif Player_2 == "سنگ":
+                        print(type_persian('کامپیوتر برنده شد!...'))
+                        player2_wins += 1
+                else:
+                    print(type_persian('یه چیزی اشتباهه!...'))
+
+            print(type_persian('بازی تموم شد!...'))
+
+            print(f' player 1 : {player1_wins} | player 2 : {player2_wins}')
+            print(type_persian('اگه می خوای ادامه ندی بنویس « خروج » وگرنه بنویس که می خوای ادامه بدی'))
+            edameh = input()
+            if 'خروج' in edameh:
+                break
+
+
+
     elif "تاریخ" in skills:
         x = datetime.datetime.now()
         print(x)
         print('')
+        print(type_persian('اگه می خوای بری مرحله قبل بنویس مرحله قبل'))
+        ghabl = input()
+        if 'قبل' in ghabl:
+            break
 
     elif "زمان" in skills:
         x = datetime.datetime.now()
         print(x)
         print('')
+        print(type_persian('اگه می خوای بری مرحله قبل بنویس مرحله قبل'))
+        ghabl = input()
+        if 'قبل' in ghabl:
+            break
+
 
     elif "ساعت" in skills:
         x = datetime.datetime.now()
         print(x)
         print('')
+        print(type_persian('اگه می خوای بری مرحله قبل بنویس مرحله قبل'))
+        ghabl = input()
+        if 'قبل' in ghabl:
+            break
+
 
     elif "امروز" in skills:
         x = datetime.datetime.now()
         print(x)
         print('')
+        print(type_persian('اگه می خوای بری مرحله قبل بنویس مرحله قبل'))
+        ghabl = input()
+        if 'قبل' in ghabl:
+            break
+
 
     elif "چندم" in skills:
         x = datetime.datetime.now()
         print(x)
         print('')
+        print(type_persian('اگه می خوای بری مرحله قبل بنویس مرحله قبل'))
+        ghabl = input()
+        if 'قبل' in ghabl:
+            break
+
+
+    elif 'تاس' in skills:
+        tass = random.randint(1, 6)
+        print('')
+        print('=>', tass, '<=')
+        print('')
+        print(type_persian('اگه می خوای بری مرحله قبل بنویس مرحله قبل'))
+        ghabl = input()
+        if 'قبل' in ghabl:
+            break
+
 
     elif 'جوک' in skills :
     
-        randomjok = random.randint(1, 11)
+        randomjok = random.randint(1, 10)
     
         if randomjok == 1:
             compeyoterjok = 'چن وخ پیش به پسر عموم گفتم واسم ایمیل بساز رمزشم واسم بفرست گفت باشه آدرس ایمیلمو فرستاد، گفتم پس رمزش کو؟ گفت واست ایمیل کردم من قضاوت رو به کارشناسا واگذار میکنم '
@@ -356,55 +571,22 @@ while True:
 
         print(type_persian(compeyoterjok))
         print('')
+        print(type_persian('اگه می خوای بری مرحله قبل بنویس مرحله قبل'))
+        ghabl = input()
+        if 'قبل' in ghabl:
+            break
 
-
-    elif skills == '1':
-        skills = int(skills)
-    
-    
     else: 
         while True:
             
-            print(type_persian('متوجه نشدم یک بار دیگه دستور درست رو بزن تا دوباره برگردی به مرحله قبل'))
+            print(type_persian('متوجه نشدم یک بار بنویس « مرحله قبل » تا دوباره برگردی به مرحله قبل'))
             
             skills_1 = input()
-            
-            if skills_1 == 'خروج':
+
+            if 'قبل' in skills_1:
                 break
-            
-            elif skills_1 == '1':
-                break
-            
-            elif skills_1 == 'جوک':
-                break
-            
-            elif "تاریخ" in skills:
-                break
-            
-            elif "زمان" in skills:
-                break
-            
-            elif "ساعت" in skills:
-                break
-            
-            elif "امروز" in skills:
-                break
-            
-            elif "چندم" in skills:
-                break
+
     
-
-    if skills == 1:
-        print(type_persian('اسم کتابخونه ات چی بود؟'))
-        ketabkhoneh = input()
-        
-        pyautogui.hotkey('ctrl', 'shift', '`')
-        
-        time.sleep(1)
-        
-        text = f'pip install {ketabkhoneh}'
-        speed = 0.1
-        pyautogui.write(text, interval=speed)
-        pyautogui.hotkey('enter')
-
 print(type_persian('خدانگهدار'))
+
+# =====> یاسین جهان تیغ <=====> yasin jahan tigh <=====
