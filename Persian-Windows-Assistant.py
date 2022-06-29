@@ -6,7 +6,6 @@ import datetime
 import string
 import webbrowser
 import pylunar
-import datetime
 import jdatetime
 
 
