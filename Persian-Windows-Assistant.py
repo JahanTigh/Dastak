@@ -1,598 +1,282 @@
-from os import rename
-import pyautogui
-import time
+# -*- coding: utf-8 -*-
+from PyQt5 import QtCore, QtGui, QtWidgets
+import os
 import random
 import datetime
 import string
-from random import *
-#------------------------------------------------
+import webbrowser
+import pylunar
+import datetime
+import jdatetime
 
-#!/usr/bin/env python
- 
-# -*- coding: utf-8 -*-
 
-def type_persian(value):
-    #Split Words
-    splitv = value.split(" ")
-    #Remove Null value in List
-    i = 0
-    while i < len(splitv):
-        if splitv[i] == "":
-            splitv[i] = ""
-            splitv.remove("")
-        elif splitv[i] == " " :
-            splitv[i] = " "
-            splitv.remove(" ")
-        elif " " in splitv[i] :
-            splitv[i] = " "
-            splitv[i] = "#$#$#$#$#|"
-            splitv.remove("#$#$#$#$#|")
-        i = i + 1
-    #chnager
-    b = 0
-    while b < len(splitv):
-        q = 0
-        word = ""
-        lastw = ""
-        splitv[b] = splitv[b]
-        for txt in splitv[b]:
-            q = q + 1
-            if lastw == "":
-                if q == 1:
-                    txt = checker_do_not_use(txt,"start")
-                elif q == len(splitv[b]):
-                    txt = checker_do_not_use(txt,"end")
-                elif q > len(splitv[b]):
-                    txt = checker_do_not_use(txt,"end")
-                else:
-                    txt = checker_do_not_use(txt,"center")
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(800, 800)
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
+        self.textBrowser.setGeometry(QtCore.QRect(10, 50, 781, 591))
+        self.textBrowser.setObjectName("textBrowser")
+        font = QtGui.QFont()
+        font.setFamily("Digi Madasi Bold")
+        font.setPointSize(15)
+        self.textBrowser.setFont(font)
+        self.run = QtWidgets.QPushButton(self.centralwidget)
+        self.run.setGeometry(QtCore.QRect(10, 660, 111, 91))
+        font = QtGui.QFont()
+        font.setFamily("Digi Madasi Bold")
+        font.setPointSize(14)
+        self.run.setFont(font)
+        self.run.setObjectName("run")
+        self.komack = QtWidgets.QPushButton(self.centralwidget)
+        self.komack.setGeometry(QtCore.QRect(10, 10, 181, 31))
+        font = QtGui.QFont()
+        font.setFamily("Digi Madasi Bold")
+        font.setPointSize(11)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.komack.setFont(font)
+        self.komack.setObjectName("komack")
+        self.github = QtWidgets.QPushButton(self.centralwidget)
+        self.github.setGeometry(QtCore.QRect(210, 10, 181, 31))
+        font = QtGui.QFont()
+        font.setFamily("Digi Madasi Bold")
+        font.setPointSize(11)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.github.setFont(font)
+        self.github.setObjectName("github")
+        self.site = QtWidgets.QPushButton(self.centralwidget)
+        self.site.setGeometry(QtCore.QRect(410, 10, 181, 31))
+        font = QtGui.QFont()
+        font.setFamily("Digi Madasi Bold")
+        font.setPointSize(11)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.site.setFont(font)
+        self.site.setObjectName("site")
+        self.donit = QtWidgets.QPushButton(self.centralwidget)
+        self.donit.setGeometry(QtCore.QRect(610, 10, 181, 31))
+        font = QtGui.QFont()
+        font.setFamily("Digi Madasi Bold")
+        font.setPointSize(11)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.donit.setFont(font)
+        self.donit.setObjectName("donit")
+        self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit.setGeometry(QtCore.QRect(130, 660, 661, 91))
+        font = QtGui.QFont()
+        font.setFamily("Digi Madasi Bold")
+        font.setPointSize(15)
+        self.lineEdit.setFont(font)
+        self.lineEdit.setText("")
+        self.lineEdit.setObjectName("lineEdit")
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
+        self.menubar.setObjectName("menubar")
+        self.menuPersian_assistant = QtWidgets.QMenu(self.menubar)
+        self.menuPersian_assistant.setObjectName("menuPersian_assistant")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+        self.menubar.addAction(self.menuPersian_assistant.menuAction())
+
+        self.retranslateUi(MainWindow)
+        self.run.clicked.connect(self.get_data)
+        self.komack.clicked.connect(self.help)
+        self.github.clicked.connect(self.github_open)
+        self.site.clicked.connect(self.site_open)
+        self.donit.clicked.connect(self.donit_open)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        MainWindow.setTabOrder(self.run, self.textBrowser)
+        MainWindow.setTabOrder(self.textBrowser, self.komack)
+        self.textBrowser.setText('سلام \n چی کار می تونم برات انجام بدم؟')
+
+    
+
+    def site_open(self):
+        webbrowser.open_new('http://jahantigh.gigfa.com/')
+    def github_open(self):
+        webbrowser.open_new('https://github.com/yasinprogrammer')
+    def donit_open(self):
+        webbrowser.open_new('https://idpay.ir/yasinjahantigh')
+    def help(self):
+        self.textBrowser.setText(' کار هایی که فعلا بلدم ایناس: \n رمز عبور قوی بسازم \nساعت رو بهت بگم \nتاریخ رو به میلادی بگم \nتاریخ رو به شمسی بگم \nبگم امروز چندم ماهه  \n برات جوک بگم \n کامپیوتر رو خاموش کنم  \n')
+
+    def get_data(self):
+        input_U = self.lineEdit.text()
+        if 'پسورد' in input_U or 'رمز' in input_U or 'ms,vn' in input_U.lower() or '\s,vn' in input_U.lower() or '`s,vn`' in input_U.lower() or 'vlc' in input_U.lower():
+            char = string.ascii_letters + string.punctuation + string.digits       
+            passw = ''.join(random.choice(char) for x in range(16))
+            self.textBrowser.append(passw)
+        
+
+        # elif 'سنگ' in input_U or 'بازی' in input_U: #TODO اینجا برای ورودی گرفتن از کاربر مشکل دارم ممنون می شم کمک کنید
+        #     self.textBrowser.setText('سنگ...')
+        #     self.textBrowser.setText('کاغذ...')
+        #     self.textBrowser.setText('قیچی...')
+        #     self.textBrowser.setText('--------------------------')
+
+        #     randomNumber = random.randint(0, 2)
+
+        #     if randomNumber == 0:
+        #         computerMove = 'سنگ' #rock
+        #     elif randomNumber == 1:
+        #         computerMove = 'کاغذ' #paper
+        #     elif randomNumber == 2:
+        #         computerMove = 'قیچی'#scissors
+
+        #     player1_wins = 0
+        #     player2_wins = 0
+        #     self.textBrowser.setText(('چند دست می خوای بازی کنی؟'))
+        #     while True:
+        #         try:
+        #             winning_score = self.lineEdit.text()
+        #             winning_score = int(winning_score)
+        #         except:
+        #             self.textBrowser.setText('b')
+        #             break
+
+        #     while player1_wins < winning_score and player2_wins < winning_score:
+        #         self.textBrowser.setText(f'شما : {player1_wins} کامپیوتر : {player2_wins}')
+        #         self.textBrowser.setText(('حرکت شما'))
+        #         Player_1 = input()
+        #         self.textBrowser.setText(('حرکت کامپیوتر:'))
+        #         self.textBrowser.setText((computerMove))
+        #         Player_2 = computerMove
+
+        #         if Player_1 == Player_2:
+        #             self.textBrowser.setText(('مساوی...'))
+        #         elif Player_1 == 'سنگ':
+        #             if Player_2 == 'قیچی':
+        #                 self.textBrowser.setText(('تو برنده شدی!...'))
+        #                 player1_wins += 1
+        #             elif Player_2 == 'کاغذ':
+        #                 self.textBrowser.setText(('کامپیوتر برنده شد!...'))
+        #                 player2_wins += 1
+        #         elif Player_1 == 'کاغذ':
+        #             if Player_2 == 'سنگ':
+        #                 self.textBrowser.setText(('تو برنده شدی!...'))
+        #                 player1_wins += 1
+        #             elif Player_2 == 'قیچی':
+        #                 self.textBrowser.setText(('کامپیوتر برنده شد!...'))
+        #                 player2_wins += 1
+        #         elif Player_1 == 'قیچی':
+        #             if Player_2 == 'کاغذ':
+        #                 self.textBrowser.setText(('تو برنده شدی!...'))
+        #                 player1_wins += 1
+        #             elif Player_2 == 'سنگ':
+        #                 self.textBrowser.setText(('کامپیوتر برنده شد!...'))
+        #                 player2_wins += 1
+        #         else:
+        #             self.textBrowser.setText(('یه چیزی اشتباهه!...'))
+
+        #     self.textBrowser.setText(('بازی تموم شد!...'))
+
+        #     self.textBrowser.setText(f' شما : {player1_wins} | کامپیوتر : {player2_wins}')
+
+
+        elif 'تاریخ' in input_U or 'زمان' in input_U or 'ساعت' in input_U or 'امروز' in input_U or 'چندم' in input_U or 'jhvdo' in input_U.lower() or 'clhk' in input_U.lower() or 'shuj' in input_U.lower() or 'hlv,c' in input_U.lower() or ']knl' in  input_U.lower():
+            moon = pylunar.MoonInfo((35, 41, 21.308),(51,23,22.561))
+            today = datetime.datetime.now()
+            moon.update((today.year, today.month, today.day, today.hour, today.minute, today.second))
+            age = (moon.age())
+            chandom_ghamari = int(age) + 1
+
+            chandom_shamsi = (jdatetime.date.fromgregorian(day = today.day, month = today.month, year = today.year))
+            chandom_shamsi = str(chandom_shamsi)
+
+            chandom_miladi = today.year, today.month, today.day
+
+            self.textBrowser.append(f'الان ساعت :\n{ today.hour} : {today.minute} : {today.second}')
+            self.textBrowser.append(f'امروز به تاریخ شمسی : \n{chandom_shamsi}')
+            self.textBrowser.append(f'امروز به تاریخ میلادی : \n{chandom_miladi}')
+            self.textBrowser.append( f'امروز « {chandom_ghamari} » ماه قمری هست(دقت کن که من هر دفعه نمی رم برات آسمون رو نگاه کنم\U0001F609\U0001F601)')
+
+        elif 'تاس' in input_U or 'jhs' in input_U:
+            tass = str(random.randint(1, 6))
+            self.textBrowser.append((f'برات تاس انداختم « {tass} » اومد'))
+
+
+
+        elif 'جوک' in input_U or '[,;' in input_U.lower():
+            try:
+                randomjok = random.randint(1, 11)
+                if randomjok == 1:
+                    compeyoterjok = 'چن وخ پیش به پسر عموم گفتم واسم ایمیل بساز رمزشم واسم بفرست گفت باشه آدرس ایمیلمو فرستاد، گفتم پس رمزش کو؟ گفت واست ایمیل کردم من قضاوت رو به کارشناسا واگذار میکنم '
                 
-            else :
-                if q == 1:
-                    #first
-                    txt = checker_do_not_use(txt,"start")
-                elif q == len(splitv[b]):
-                    #end
-                    if "ا" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    elif "آ" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    elif "د" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    elif "ذ" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    elif "ر" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    elif "ز" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    elif "ژ" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    elif "و" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    else:
-                        txt = checker_do_not_use(txt,"end")
-                elif q > len(splitv[b]):
-                    #end_Copy
-                    if "ا" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    elif "آ" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    elif "د" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    elif "ذ" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    elif "ر" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    elif "ز" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    elif "ژ" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    elif "و" in lastw:
-                        txt = checker_do_not_use(txt,"endPlus")
-                    else:
-                        txt = checker_do_not_use(txt,"end")
-                else:
-                    #center
-                    if "ا" in lastw:
-                        txt = checker_do_not_use(txt,"start")
-                    elif "آ" in lastw:
-                        txt = checker_do_not_use(txt,"start")
-                    elif "د" in lastw:
-                        txt = checker_do_not_use(txt,"start")
-                    elif "ذ" in lastw:
-                        txt = checker_do_not_use(txt,"start")
-                    elif "ر" in lastw:
-                        txt = checker_do_not_use(txt,"start")
-                    elif "ز" in lastw:
-                        txt = checker_do_not_use(txt,"start")
-                    elif "ژ" in lastw:
-                        txt = checker_do_not_use(txt,"start")
-                    elif "و" in lastw:
-                        txt = checker_do_not_use(txt,"start")
-                    else:
-                        txt = checker_do_not_use(txt,"center")
-            lastw = txt
-            word = word + txt
-        word = word[::-1]
-        splitv[b] = word
-        b = b+1
-    #
-    l = len(splitv)
-    all_txt = ""
-    while 0 < l:
-        m = l - 1
-        all_txt = all_txt + splitv[m] + " "
-        l = l - 1
-    editor = all_txt
-    editor = editor[::-1]
-    editor = editor.replace(" ","",1)
-    editor = editor[::-1]
-    all_txt = editor
-    return all_txt
-def checker_do_not_use(string , value):
-    if(value == "start"):
-        string = string.replace("ا","ﺍ")
-        string = string.replace("آ","ﺁ")
-        string = string.replace("ب","ﺑ")
-        string = string.replace("پ","ﭘ")
-        string = string.replace("ت","ﺗ")
-        string = string.replace("ث","ﺛ")
-        string = string.replace("ج","ﺟ")
-        string = string.replace("چ","ﭼ")
-        string = string.replace("ح","ﺣ")
-        string = string.replace("خ","ﺧ")
-        string = string.replace("د","ﺩ")
-        string = string.replace("ذ","ﺫ")
-        string = string.replace("ر","ﺭ")
-        string = string.replace("ز","ﺯ")
-        string = string.replace("ژ","ﮊ")
-        string = string.replace("س","ﺳ")
-        string = string.replace("ش","ﺷ")
-        string = string.replace("ص","ﺻ")
-        string = string.replace("ض","ﺿ")
-        string = string.replace("ط","ﻃ")
-        string = string.replace("ظ","ﻇ")
-        string = string.replace("ع","ﻋ")
-        string = string.replace("غ","ﻏ")
-        string = string.replace("ف","ﻓ")
-        string = string.replace("ق","ﻗ")
-        string = string.replace("ک","ﮐ")
-        string = string.replace("گ","ﮔ")
-        string = string.replace("ل","ﻟ")
-        string = string.replace("م","ﻣ")
-        string = string.replace("ن","ﻧ")
-        string = string.replace("و","ﻭ")
-        string = string.replace("ه","ﻫ")
-        string = string.replace("ی","ﯾ")
-    elif(value == "center"):
-        string = string.replace("ا","ﺎ")
-        string = string.replace("آ","ﺁ")
-        string = string.replace("ب","ﺒ")
-        string = string.replace("پ","ﭙ")
-        string = string.replace("ت","ﺘ")
-        string = string.replace("ث","ﺜ")
-        string = string.replace("ج","ﺠ")
-        string = string.replace("چ","ﭽ")
-        string = string.replace("ح","ﺤ")
-        string = string.replace("خ","ﺨ")
-        string = string.replace("د","ﺪ")
-        string = string.replace("ذ","ﺬ")
-        string = string.replace("ر","ﺮ")
-        string = string.replace("ز","ﺰ")
-        string = string.replace("ژ","ﮋ")
-        string = string.replace("س","ﺴ")
-        string = string.replace("ش","ﺸ")
-        string = string.replace("ص","ﺼ")
-        string = string.replace("ض","ﻀ")
-        string = string.replace("ط","ﻄ")
-        string = string.replace("ظ","ﻈ")
-        string = string.replace("ع","ﻌ")
-        string = string.replace("غ","ﻐ")
-        string = string.replace("ف","ﻔ")
-        string = string.replace("ق","ﻘ")
-        string = string.replace("ک","ﮑ")
-        string = string.replace("گ","ﮕ")
-        string = string.replace("ل","ﻠ")
-        string = string.replace("م","ﻤ")
-        string = string.replace("ن","ﻨ")
-        string = string.replace("و","ﻮ")
-        string = string.replace("ه","ﻬ")
-        string = string.replace("ی","ﯿ")
-    elif(value == "end"):
-        string = string.replace("ا","ﺍ")
-        string = string.replace("آ","ﺁ")
-        string = string.replace("ب","ﺐ")
-        string = string.replace("پ","ﭗ")
-        string = string.replace("ت","ﺖ")
-        string = string.replace("ث","ﺚ")
-        string = string.replace("ج","ﺞ")
-        string = string.replace("چ","ﭻ")
-        string = string.replace("ح","ﺢ")
-        string = string.replace("خ","ﺦ")
-        string = string.replace("د","ﺩ")
-        string = string.replace("ذ","ﺫ")
-        string = string.replace("ر","ﺭ")
-        string = string.replace("ز","ﺯ")
-        string = string.replace("ژ","ژ")
-        string = string.replace("س","ﺲ")
-        string = string.replace("ش","ﺶ")
-        string = string.replace("ص","ﺺ")
-        string = string.replace("ض","ﺾ")
-        string = string.replace("ط","ﻂ")
-        string = string.replace("ظ","ﻆ")
-        string = string.replace("ع","ﻊ")
-        string = string.replace("غ","ﻎ")
-        string = string.replace("ف","ﻒ")
-        string = string.replace("ق","ﻖ")
-        string = string.replace("ک","ﮏ")
-        string = string.replace("گ","ﮓ")
-        string = string.replace("ل","ﻞ")
-        string = string.replace("م","م")
-        string = string.replace("ن","ﻥ")
-        string = string.replace("و","ﻭ")
-        string = string.replace("ه","ﻩ")
-        string = string.replace("ی","ﯼ")
-    elif(value == "endPlus"):
-        string = string.replace("ا","ﺍ")
-        string = string.replace("آ","ﺁ")
-        string = string.replace("ب","ب")
-        string = string.replace("پ","پ")
-        string = string.replace("ت","ت")
-        string = string.replace("ث","ث")
-        string = string.replace("ج","ج")
-        string = string.replace("چ","چ")
-        string = string.replace("ح","ح")
-        string = string.replace("خ","خ")
-        string = string.replace("د","د")
-        string = string.replace("ذ","ذ")
-        string = string.replace("ر","ر")
-        string = string.replace("ز","ز")
-        string = string.replace("ژ","ژ")
-        string = string.replace("س","س")
-        string = string.replace("ش","ش")
-        string = string.replace("ص","ص")
-        string = string.replace("ض","ض")
-        string = string.replace("ط","ط")
-        string = string.replace("ظ","ظ")
-        string = string.replace("ع","ع")
-        string = string.replace("غ","غ")
-        string = string.replace("ف","ف")
-        string = string.replace("ق","ق")
-        string = string.replace("ک","ک")
-        string = string.replace("گ","گ")
-        string = string.replace("ل","ل")
-        string = string.replace("م","م")
-        string = string.replace("ن","ن")
-        string = string.replace("و","و")
-        string = string.replace("ه","ه")
-        string = string.replace("ی","ی")
-    return string
+                elif randomjok == 2:
+                    compeyoterjok ='تخمه آفتابگردون كيلويی 39 تومن تسبيح دونه‌ای 40 تومن كاپشن پفی 400 تومن شلوار شيش جيب 280 تومن كتونی تايگر فيک 180 تومن! واسه سر كوچه الاف واستادن و تخمه شكستن تو ايران الان حدودا ۱ تومن سرمايه لازمه! '
 
-#------------------------------------------------
+                elif randomjok == 3:
+                    compeyoterjok ='سوالات متداول از مامان: گشنمه….  شام کی حاضر میشه!؟  سردمه!!  پیرهنم کجاست!؟  اون شلوار مشکیمو شستی!؟  نمیتونم پیداش کنم!!  ناهارچی داریم!؟  این چرا اتو نداره!؟  سوالات متداول از بابا: مامان کجاست؟! '
 
-print(type_persian('سلام'))
+                elif randomjok == 4:
+                    compeyoterjok ='یک معمای خیلی جالب: سه تابچه تو خونه بودن اولی عشق نام داشت دومی محبت نام داشت و سومی دوستت دارم بود یک روز پدرشان عشق و محبت رابه بازار برد حالا بگو کی خونه مونده؟؟؟؟ نشنیدم بازم بگو؟ واقعاً؟!!!!! '
 
-while True:
+                elif randomjok == 5:
+                    compeyoterjok ='یارو میره هارد بخره میگه هارد 640 میخوام حیف نون هارد 500 میاره بهش میگه گفتم 640 میگه: ناراحت نباش جا وا می‌کنه…!!! '
 
-    print(type_persian(' کار هایی که من می تونم انجام بدم ایناس:'))
-    
-    print(type_persian('بلدم جوک هم بگم اگه هم جوک نصفه بود صفحه روکوچیک کن '))
-    
-    print(type_persian('بلدم تاریخ و ساعت رو بگم'))
+                elif randomjok == 7:
+                    compeyoterjok ='کبوتر با کبوتر باز باران با ترانه میخورد بر بامش بیش برفش بیشتر آمدی جانم به قربانت ولی حالا چرا عاقل کند کاری که باز آید به کنعان غم مخور خربزه با پوست موزو میندازی زمین هوا میره نمیدونی تا کجا میره!! '
 
-    print(type_persian('بلدم تاس بندازم'))
+                elif randomjok == 8:
+                    compeyoterjok ='ای کسانی که با خیال راحت ماسک فیلتر دار استفاده می‌کنید! بدانید و آگاه باشید که کرونا در ایران مانند شهروندان این کشور به فیلتر شکن مجهز است!!'
 
-    print(type_persian('باهات سنگ کاغذ قیچی بازی کنم'))
+                elif randomjok == 9:
+                    compeyoterjok ='ﺑﺮﯾﺰﺵ ﺑﯿﻨﻰ ﺩﺍﺭﻡ. ﺭﻓﺘﻢ ﺩﺍﺭﻭﺧﻮﻧﻪ ﻗﺮﺹ ﺿﺪﺣﺴﺎﺳﯿﺖ ﺑﮕﯿﺮﻡ. ﺗﻮ ﻋﻮﺍﺭﺽ ﺟﺎﻧﺒﯿﺶ ﻧﻮﺷﺘﻪ ﺳﺮ ﺩﺭﺩ و ﺳﺮ ﮔﯿﺠﻪ ﺣﺎﻟﺖ تهوع ﺍﺧﺘﻼﻝ ﺩﺭ ﺧﻮﺍﺏ ﻧﺎﺭﺳﺎﯾﻰ ﮐﺒﺪ ﺳﮑﺘﻪ ﻗﺒﻠﻰ و ﺳﮑﺘﻪ ﻯ ﻣﻐﺰﻯﻣﺮﮒ ﻧﺎﮔﮭﺎﻧﻰ!… ﮪﯿﭽﻰ ﺩﯾﮕﻪ … ﭘﺸﯿﻤﻮﻥ ﺷﺪﻡ با آستینم پاکش می‌کنم ﺍﻣﻨﯿﺘﺶ ﺑﯿﺸﺘﺮﻩ؟!'
 
-    print(type_persian('رمز عبور قوی بسازم'))
+                elif randomjok == 10:
+                    compeyoterjok ='ﺍﮔﺮ ﺩﯾﺪﯼ ﺟﻮﺍﻧﯽ ﺑﺮﺩﺭﺧﺘﯽ ﺗﮑﯿﻪ ﮐﺮﺩﻩ ﺳﺮﯾﻊ ﺑﯿﺎﺭﯾﺪﺵ ﮐﻨﺎﺭ ﯾﻬﻮ ﮔﻼﺑﯽ ﭼﯿﺰﯼ می‌خوره ﺗﻮﺳﺮﺵ چهار تا فرمول ﺑﻪ ﻓﯿﺰﯾﮏ ﺍﺿﺎﻓﻪ ﻣﯿﮑﻨﻪ ﺑﺪﺑﺨﺖ می‌شیم'
+                
+                elif randomjok == 11:
+                    compeyoterjok  ='یه عدد بین 10 تا 20 انتخاب کن \n اون عدد رو با 32 جمع کن\nحاصل رو ضرب در 2 کن\n حاصل رو منهای 1 کن\nحالا چشماتو 5 ثانیه ببند \n . \n .\n .همه جا تاریک شد. درسته؟ \n اینو خودم درس کردم\n ما اینیم دیگه!'
 
-    print(type_persian('فقط اگه موقع تایپ کردن دیدی حروف جابه جا شده نگران نباش من می فهمم'))
-    
-    print(' \U0001F609')
-    
-    print(type_persian('حالا کدومو بدم؟...'))
-    
-    print(type_persian('هر وقت هم خواستی می تونی با من خدا حافظی کنی'))
-    
-    print(type_persian('  فقط وقتی کار رو انجام دادم اون پنجره ی  )hsad(  رو ببند'))
-    
-    skills = input()
-    
-    if 'خدا نگهدار' in skills :
-        break
-    
-    elif 'خدانگهدار' in skills :
-        break
-    
-    elif 'خداحافظ' in skills :
-        break
-    
-    elif 'خدا حافظ' in skills :
-        break
-    
-    elif 'بای' in skills :
-        break
-    
-    elif 'پسورد' in skills:
-        while True:
-            char = string.ascii_letters + string.punctuation + string.digits
-            print(type_persian('چند رقمی باشه؟'))
-            t = input()  
-            t = int(t)          
-            passw = "".join(choice(char) for x in range(randint(t)))
-            print('')
-            print(passw)
-            print('')
-            print(type_persian('اگه می خوای ادامه ندی بنویس « خروج » وگرنه بنویس که می خوای ادامه بدی'))
-            edameh = input()
-            if 'خروج' in edameh:
-                break
-
-    elif 'رمز' in skills:
-        while True:
-            char = string.ascii_letters + string.punctuation + string.digits
-            print(type_persian('چند رقمی باشه؟'))
-            t = input()
-            t = int(t)
-            passw = "".join(choice(char) for x in range(randint(t)))
-            print('')
-            print(passw)
-            print('')
-            print(type_persian('اگه می خوای ادامه ندی بنویس « خروج » وگرنه بنویس که می خوای ادامه بدی'))
-            edameh = input()
-            if 'خروج' in edameh:
-                break
-
-    elif 'سنگ' in skills:
-        while True:
-            print("سنگ...")
-            print("کاغذ...")
-            print("قیچی...")
-            print(type_persian('نکته وقتی دیگه نخواستی بازی کنی »q« رو بزن'))
-            print("------------------")
-
-            randomNumber = random.randint(0, 2)
-
-            if randomNumber == 0:
-                computerMove = "سنگ" #rock
-            elif randomNumber == 1:
-                computerMove = "کاغذ" #paper
-            elif randomNumber == 2:
-                computerMove = "قیچی"#scissors
-
-            player1_wins = 0
-            player2_wins = 0
-            print(type_persian('چند دست می خوای بازی کنی؟'))
-            winning_score = input()
-            winning_score = int(winning_score)
-
-            while player1_wins < winning_score and player2_wins < winning_score:
-                print(f"player 1 : {player1_wins} player 2 : {player2_wins}")
-                print(type_persian('حرکت شما'))
-                Player_1 = input()
-                print(type_persian('حرکت کامپیوتر:'))
-                print(type_persian(computerMove))
-                Player_2 = computerMove
-
-                if Player_1 == "q" or Player_1 == "quit":
-                    break
-
-                if Player_1 == Player_2:
-                    print(type_persian('مساوی...'))
-                elif Player_1 == "سنگ":
-                    if Player_2 == "قیچی":
-                        print(type_persian('تو برنده شدی!...'))
-                        player1_wins += 1
-                    elif Player_2 == "کاغذ":
-                        print(type_persian('کامپیوتر برنده شد!...'))
-                        player2_wins += 1
-                elif Player_1 == "کاغذ":
-                    if Player_2 == "سنگ":
-                        print(type_persian('تو برنده شدی!...'))
-                        player1_wins += 1
-                    elif Player_2 == "قیچی":
-                        print(type_persian('کامپیوتر برنده شد!...'))
-                        player2_wins += 1
-                elif Player_1 == "قیچی":
-                    if Player_2 == "کاغذ":
-                        print(type_persian('تو برنده شدی!...'))
-                        player1_wins += 1
-                    elif Player_2 == "سنگ":
-                        print(type_persian('کامپیوتر برنده شد!...'))
-                        player2_wins += 1
-                else:
-                    print(type_persian('یه چیزی اشتباهه!...'))
-
-            print(type_persian('بازی تموم شد!...'))
-
-            print(f' player 1 : {player1_wins} | player 2 : {player2_wins}')
-            print(type_persian('اگه می خوای ادامه ندی بنویس « خروج » وگرنه بنویس که می خوای ادامه بدی'))
-            edameh = input()
-            if 'خروج' in edameh:
-                break
+                self.textBrowser.append((compeyoterjok))
+            except:
+                self.textBrowser.append('یه مشکلی پیش اومده!!!(شاید جوک هام تموم شده)')
 
 
-    elif 'بازی' in skills:
-        while True:
-            print(type_persian("سنگ..."))
-            print(type_persian("کاغذ..."))
-            print(type_persian("قیچی..."))
-            print(type_persian('نکته وقتی دیگه نخواستی بازی کنی »q« رو بزن'))
-            print("------------------")
+        elif 'خاموش' in input_U or 'شات دان' in input_U or 'شاتدان' in input_U or 'ohl,a' in input_U.lower() or 'ahj nhk' in input_U.lower() or 'ahjnhk' in input_U.lower():
+            os.system("shutdown -s -t 11")
+            self.textBrowser.append('تا 11 ثانیه دیگه کامپیوتر خاموش میشه !')
 
-            randomNumber = random.randint(0, 2)
-
-            if randomNumber == 0:
-                computerMove = "سنگ" #rock
-            elif randomNumber == 1:
-                computerMove = "کاغذ" #paper
-            elif randomNumber == 2:
-                computerMove = "قیچی"#scissors
-
-            player1_wins = 0
-            player2_wins = 0
-            print(type_persian('چند دست می خوای بازی کنی؟'))
-            winning_score = input()
-            winning_score = int(winning_score)
-
-            while player1_wins < winning_score and player2_wins < winning_score:
-                print(f"player 1 : {player1_wins} player 2 : {player2_wins}")
-                print(type_persian('حرکت شما'))
-                Player_1 = input()
-                print(type_persian('حرکت کامپیوتر:'))
-                print(type_persian(computerMove))
-                Player_2 = computerMove
-
-                if Player_1 == "q" or Player_1 == "quit":
-                    break
-
-                if Player_1 == Player_2:
-                    print(type_persian('مساوی...'))
-                elif Player_1 == "سنگ":
-                    if Player_2 == "قیچی":
-                        print(type_persian('تو برنده شدی!...'))
-                        player1_wins += 1
-                    elif Player_2 == "کاغذ":
-                        print(type_persian('کامپیوتر برنده شد!...'))
-                        player2_wins += 1
-                elif Player_1 == "کاغذ":
-                    if Player_2 == "سنگ":
-                        print(type_persian('تو برنده شدی!...'))
-                        player1_wins += 1
-                    elif Player_2 == "قیچی":
-                        print(type_persian('کامپیوتر برنده شد!...'))
-                        player2_wins += 1
-                elif Player_1 == "قیچی":
-                    if Player_2 == "کاغذ":
-                        print(type_persian('تو برنده شدی!...'))
-                        player1_wins += 1
-                    elif Player_2 == "سنگ":
-                        print(type_persian('کامپیوتر برنده شد!...'))
-                        player2_wins += 1
-                else:
-                    print(type_persian('یه چیزی اشتباهه!...'))
-
-            print(type_persian('بازی تموم شد!...'))
-
-            print(f' player 1 : {player1_wins} | player 2 : {player2_wins}')
-            print(type_persian('اگه می خوای ادامه ندی بنویس « خروج » وگرنه بنویس که می خوای ادامه بدی'))
-            edameh = input()
-            if 'خروج' in edameh:
-                break
+        else: 
+            self.textBrowser.append(('متوجه نشدم یک بار دیگه دستورت رو بنویس (احتمالا کاری رو که می خوای من بلد نیستم\U0001F614)'))
 
 
-
-    elif "تاریخ" in skills:
-        x = datetime.datetime.now()
-        print(x)
-        print('')
-        print(type_persian('اگه می خوای بری مرحله قبل بنویس مرحله قبل'))
-        ghabl = input()
-        if 'قبل' in ghabl:
-            break
-
-    elif "زمان" in skills:
-        x = datetime.datetime.now()
-        print(x)
-        print('')
-        print(type_persian('اگه می خوای بری مرحله قبل بنویس مرحله قبل'))
-        ghabl = input()
-        if 'قبل' in ghabl:
-            break
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("Persian assistant", "Persian assistant"))
+        self.textBrowser.setHtml(_translate("Persian assistant", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+        self.run.setText(_translate("Persian assistant", "اجراکن"))
+        self.komack.setText(_translate("Persian assistant", "!کمک"))
+        self.github.setText(_translate("Persian assistant", "گیت هابم"))
+        self.site.setText(_translate("Persian assistant", "وب سایتم"))
+        self.donit.setText(_translate("Persian assistant", "همایت"))
+        self.lineEdit.setPlaceholderText(_translate("Persian assistant", "دستورت رو اینجا تایپ کن"))
+        self.menuPersian_assistant.setTitle(_translate("Persian assistant", "Persian assistant"))
 
 
-    elif "ساعت" in skills:
-        x = datetime.datetime.now()
-        print(x)
-        print('')
-        print(type_persian('اگه می خوای بری مرحله قبل بنویس مرحله قبل'))
-        ghabl = input()
-        if 'قبل' in ghabl:
-            break
-
-
-    elif "امروز" in skills:
-        x = datetime.datetime.now()
-        print(x)
-        print('')
-        print(type_persian('اگه می خوای بری مرحله قبل بنویس مرحله قبل'))
-        ghabl = input()
-        if 'قبل' in ghabl:
-            break
-
-
-    elif "چندم" in skills:
-        x = datetime.datetime.now()
-        print(x)
-        print('')
-        print(type_persian('اگه می خوای بری مرحله قبل بنویس مرحله قبل'))
-        ghabl = input()
-        if 'قبل' in ghabl:
-            break
-
-
-    elif 'تاس' in skills:
-        tass = random.randint(1, 6)
-        print('')
-        print('=>', tass, '<=')
-        print('')
-        print(type_persian('اگه می خوای بری مرحله قبل بنویس مرحله قبل'))
-        ghabl = input()
-        if 'قبل' in ghabl:
-            break
-
-
-    elif 'جوک' in skills :
-    
-        randomjok = random.randint(1, 10)
-    
-        if randomjok == 1:
-            compeyoterjok = 'چن وخ پیش به پسر عموم گفتم واسم ایمیل بساز رمزشم واسم بفرست گفت باشه آدرس ایمیلمو فرستاد، گفتم پس رمزش کو؟ گفت واست ایمیل کردم من قضاوت رو به کارشناسا واگذار میکنم '
-        
-        elif randomjok == 2:
-            compeyoterjok ='تخمه آفتابگردون كيلويی ۹۳ تومن تسبيح دونه‌ای ۰۴ تومن كاپشن پفی ۰۰۴ تومن شلوار شيش جيب ۰۸۲ تومن كتونی تايگر فيک ۰۸۱ تومن! واسه سر كوچه الاف واستادن و تخمه شكستن تو ايران الان حدودا ۱ تومن سرمايه لازمه! '
-
-        elif randomjok == 3:
-            compeyoterjok ='سوالات متداول از مامان: گشنمه….  شام کی حاضر میشه!؟  سردمه!!  پیرهنم کجاست!؟  اون شلوار مشکیمو شستی!؟  نمیتونم پیداش کنم!!  ناهارچی داریم!؟  این چرا اتو نداره!؟  سوالات متداول از بابا: مامان کجاست؟! '
-
-        elif randomjok == 4:
-            compeyoterjok ='یک معمای خیلی جالب: سه تابچه تو خونه بودن اولی عشق نام داشت دومی محبت نام داشت و سومی دوستت دارم بود یک روز پدرشان عشق و محبت رابه بازار برد حالا بگو کی خونه مونده؟؟؟؟ نشنیدم بازم بگو؟ واقعاً؟!!!!! '
-
-        elif randomjok == 5:
-            compeyoterjok ='یارو میره هارد بخره میگه هارد ۰۴۶ میخوام حیف نون هارد ۰۰۵ میاره بهش میگه گفتم ۰۴۶ میگه: ناراحت نباش جا وا می‌کنه…!!! '
-
-        elif randomjok == 7:
-            compeyoterjok ='کبوتر با کبوتر باز باران با ترانه میخورد بر بامش بیش برفش بیشتر آمدی جانم به قربانت ولی حالا چرا عاقل کند کاری که باز آید به کنعان غم مخور خربزه با پوست موزو میندازی زمین هوا میره نمیدونی تا کجا میره!! '
-
-        elif randomjok == 8:
-            compeyoterjok ='ای کسانی که با خیال راحت ماسک فیلتر دار استفاده می‌کنید! بدانید و آگاه باشید که کرونا در ایران مانند شهروندان این کشور به فیلتر شکن مجهز است!!'
-
-        elif randomjok == 9:
-            compeyoterjok ='ﺑﺮﯾﺰﺵ ﺑﯿﻨﻰ ﺩﺍﺭﻡ. ﺭﻓﺘﻢ ﺩﺍﺭﻭﺧﻮﻧﻪ ﻗﺮﺹ ﺿﺪﺣﺴﺎﺳﯿﺖ ﺑﮕﯿﺮﻡ. ﺗﻮ ﻋﻮﺍﺭﺽ ﺟﺎﻧﺒﯿﺶ ﻧﻮﺷﺘﻪ ﺳﺮ ﺩﺭﺩ و ﺳﺮ ﮔﯿﺠﻪ ﺣﺎﻟﺖ تهوع ﺍﺧﺘﻼﻝ ﺩﺭ ﺧﻮﺍﺏ ﻧﺎﺭﺳﺎﯾﻰ ﮐﺒﺪ ﺳﮑﺘﻪ ﻗﺒﻠﻰ و ﺳﮑﺘﻪ ﻯ ﻣﻐﺰﻯﻣﺮﮒ ﻧﺎﮔﮭﺎﻧﻰ!… ﮪﯿﭽﻰ ﺩﯾﮕﻪ … ﭘﺸﯿﻤﻮﻥ ﺷﺪﻡ با آستینم پاکش می‌کنم ﺍﻣﻨﯿﺘﺶ ﺑﯿﺸﺘﺮﻩ؟!'
-
-        elif randomjok == 10:
-            compeyoterjok ='ﺍﮔﺮ ﺩﯾﺪﯼ ﺟﻮﺍﻧﯽ ﺑﺮﺩﺭﺧﺘﯽ ﺗﮑﯿﻪ ﮐﺮﺩﻩ ﺳﺮﯾﻊ ﺑﯿﺎﺭﯾﺪﺵ ﮐﻨﺎﺭ ﯾﻬﻮ ﮔﻼﺑﯽ ﭼﯿﺰﯼ می‌خوره ﺗﻮﺳﺮﺵ چهار تا فرمول ﺑﻪ ﻓﯿﺰﯾﮏ ﺍﺿﺎﻓﻪ ﻣﯿﮑﻨﻪ ﺑﺪﺑﺨﺖ می‌شیم'
-        
-        compeyoterjok = str(compeyoterjok)
-
-        print(type_persian(compeyoterjok))
-        print('')
-        print(type_persian('اگه می خوای بری مرحله قبل بنویس مرحله قبل'))
-        ghabl = input()
-        if 'قبل' in ghabl:
-            break
-
-    else: 
-        while True:
-            
-            print(type_persian('متوجه نشدم یک بار بنویس « مرحله قبل » تا دوباره برگردی به مرحله قبل'))
-            
-            skills_1 = input()
-
-            if 'قبل' in skills_1:
-                break
-
-    
-print(type_persian('خدانگهدار'))
-
-# =====> یاسین جهان تیغ <=====> yasin jahan tigh <=====
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
+# =====> یاسین جهان تیغ <=====|=====> YASIN JAHAN TIGH <=====|=====> YASINJAHANTIGH@OUTLOOK.COM <=====
