@@ -265,7 +265,7 @@ class Ui_MainWindow(object):
         self.komack.setText(_translate("Persian assistant", "!کمک"))
         self.github.setText(_translate("Persian assistant", "گیت هابم"))
         self.site.setText(_translate("Persian assistant", "وب سایتم"))
-        self.donit.setText(_translate("Persian assistant", "همایت"))
+        self.donit.setText(_translate("Persian assistant", "حمایت"))
         self.lineEdit.setPlaceholderText(_translate("Persian assistant", "دستورت رو اینجا تایپ کن"))
         self.menuPersian_assistant.setTitle(_translate("Persian assistant", "Persian assistant"))
 
