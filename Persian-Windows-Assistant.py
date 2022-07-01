@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'Persian_assistant.ui'
+#
+# Created by: PyQt5 UI code generator 5.14.1
+#
+# WARNING! All changes made in this file will be lost!
+
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 import os
 import random
@@ -7,21 +15,23 @@ import string
 import webbrowser
 import pylunar
 import jdatetime
+import speech_recognition as sr 
+
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
+        MainWindow.setObjectName("Persian assistant")
         MainWindow.resize(800, 800)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
         self.textBrowser.setGeometry(QtCore.QRect(10, 50, 781, 591))
-        self.textBrowser.setObjectName("textBrowser")
         font = QtGui.QFont()
         font.setFamily("Digi Madasi Bold")
-        font.setPointSize(15)
+        font.setPointSize(14)
         self.textBrowser.setFont(font)
+        self.textBrowser.setObjectName("textBrowser")
         self.run = QtWidgets.QPushButton(self.centralwidget)
         self.run.setGeometry(QtCore.QRect(10, 660, 111, 91))
         font = QtGui.QFont()
@@ -70,13 +80,20 @@ class Ui_MainWindow(object):
         self.donit.setFont(font)
         self.donit.setObjectName("donit")
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit.setGeometry(QtCore.QRect(130, 660, 661, 91))
+        self.lineEdit.setGeometry(QtCore.QRect(130, 660, 541, 91))
         font = QtGui.QFont()
         font.setFamily("Digi Madasi Bold")
         font.setPointSize(15)
         self.lineEdit.setFont(font)
         self.lineEdit.setText("")
         self.lineEdit.setObjectName("lineEdit")
+        self.mic = QtWidgets.QPushButton(self.centralwidget)
+        self.mic.setGeometry(QtCore.QRect(680, 660, 111, 91))
+        font = QtGui.QFont()
+        font.setFamily("Digi Madasi Bold")
+        font.setPointSize(14)
+        self.mic.setFont(font)
+        self.mic.setObjectName("mic")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
@@ -91,6 +108,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.run.clicked.connect(self.get_data)
+        self.mic.clicked.connect(self.get_audio)
         self.komack.clicked.connect(self.help)
         self.github.clicked.connect(self.github_open)
         self.site.clicked.connect(self.site_open)
@@ -100,8 +118,33 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.textBrowser, self.komack)
         self.textBrowser.setText('سلام \n چی کار می تونم برات انجام بدم؟')
 
-    
 
+    def get_audio(self):
+        self.lineEdit.setText('')
+        app.processEvents()
+        r = sr.Recognizer()
+        app.processEvents()
+        with sr.Microphone() as source:
+            app.processEvents()
+            self.textBrowser.append('دارم بهت گوش می دم...(لطفا با آرامش صحبت کن تا متوجه بشم)') 
+            app.processEvents()
+            r.adjust_for_ambient_noise(source)
+            app.processEvents()
+            audio = r.listen(source)
+            app.processEvents()
+            try:     
+                app.processEvents()
+                voice_U = (r.recognize_google(audio, language= 'fa-IR'))
+                self.lineEdit.setText(voice_U)
+                self.textBrowser.setText(voice_U)
+                app.processEvents()
+                self.textBrowser.append('دیگه گوش نمی دم')
+                app.processEvents()
+            except:
+                app.processEvents()
+                self.textBrowser.append("متوجه نشدم دوباره روی میکروفون ضربه بزن و امتحان کن")
+                app.processEvents()
+    
     def site_open(self):
         webbrowser.open_new('http://jahantigh.gigfa.com/')
     def github_open(self):
@@ -109,7 +152,7 @@ class Ui_MainWindow(object):
     def donit_open(self):
         webbrowser.open_new('https://idpay.ir/yasinjahantigh')
     def help(self):
-        self.textBrowser.setText(' کار هایی که فعلا بلدم ایناس: \n رمز عبور قوی بسازم \nساعت رو بهت بگم \nتاریخ رو به میلادی بگم \nتاریخ رو به شمسی بگم \nبگم امروز چندم ماهه  \n برات جوک بگم \n کامپیوتر رو خاموش کنم  \n')
+        self.textBrowser.setText(' کار هایی که فعلا بلدم ایناس: \n رمز عبور قوی بسازم \nساعت رو بهت بگم \nتاریخ رو به میلادی بگم \nتاریخ رو به شمسی بگم \nبگم امروز چندم ماهه قمریهآ  \n برات جوک بگم \n کامپیوتر رو خاموش کنم  \n')
 
     def get_data(self):
         input_U = self.lineEdit.text()
@@ -232,7 +275,7 @@ class Ui_MainWindow(object):
                     compeyoterjok ='ای کسانی که با خیال راحت ماسک فیلتر دار استفاده می‌کنید! بدانید و آگاه باشید که کرونا در ایران مانند شهروندان این کشور به فیلتر شکن مجهز است!!'
 
                 elif randomjok == 9:
-                    compeyoterjok ='ﺑﺮﯾﺰﺵ ﺑﯿﻨﻰ ﺩﺍﺭﻡ. ﺭﻓﺘﻢ ﺩﺍﺭﻭﺧﻮﻧﻪ ﻗﺮﺹ ﺿﺪﺣﺴﺎﺳﯿﺖ ﺑﮕﯿﺮﻡ. ﺗﻮ ﻋﻮﺍﺭﺽ ﺟﺎﻧﺒﯿﺶ ﻧﻮﺷﺘﻪ ﺳﺮ ﺩﺭﺩ و ﺳﺮ ﮔﯿﺠﻪ ﺣﺎﻟﺖ تهوع ﺍﺧﺘﻼﻝ ﺩﺭ ﺧﻮﺍﺏ ﻧﺎﺭﺳﺎﯾﻰ ﮐﺒﺪ ﺳﮑﺘﻪ ﻗﺒﻠﻰ و ﺳﮑﺘﻪ ﻯ ﻣﻐﺰﻯﻣﺮﮒ ﻧﺎﮔﮭﺎﻧﻰ!… ﮪﯿﭽﻰ ﺩﯾﮕﻪ … ﭘﺸﯿﻤﻮﻥ ﺷﺪﻡ با آستینم پاکش می‌کنم ﺍﻣﻨﯿﺘﺶ ﺑﯿﺸﺘﺮﻩ؟!'
+                    compeyoterjok ='آب رﯾﺰﺵ ﺑﯿﻨﻰ ﺩﺍﺭﻡ. ﺭﻓﺘﻢ ﺩﺍﺭﻭﺧﻮﻧﻪ ﻗﺮﺹ ﺿﺪﺣﺴﺎﺳﯿﺖ ﺑﮕﯿﺮﻡ. ﺗﻮ ﻋﻮﺍﺭﺽ ﺟﺎﻧﺒﯿﺶ ﻧﻮﺷﺘﻪ ﺳﺮ ﺩﺭﺩ و ﺳﺮ ﮔﯿﺠﻪ ﺣﺎﻟﺖ تهوع ﺍﺧﺘﻼﻝ ﺩﺭ ﺧﻮﺍﺏ ﻧﺎﺭﺳﺎﯾﻰ ﮐﺒﺪ ﺳﮑﺘﻪ ﻗﺒﻠﻰ و ﺳﮑﺘﻪ ﻯ ﻣﻐﺰﻯﻣﺮﮒ ﻧﺎﮔﮭﺎﻧﻰ!… ﮪﯿﭽﻰ ﺩﯾﮕﻪ … ﭘﺸﯿﻤﻮﻥ ﺷﺪﻡ با آستینم پاکش می‌کنم ﺍﻣﻨﯿﺘﺶ ﺑﯿﺸﺘﺮﻩ؟!'
 
                 elif randomjok == 10:
                     compeyoterjok ='ﺍﮔﺮ ﺩﯾﺪﯼ ﺟﻮﺍﻧﯽ ﺑﺮﺩﺭﺧﺘﯽ ﺗﮑﯿﻪ ﮐﺮﺩﻩ ﺳﺮﯾﻊ ﺑﯿﺎﺭﯾﺪﺵ ﮐﻨﺎﺭ ﯾﻬﻮ ﮔﻼﺑﯽ ﭼﯿﺰﯼ می‌خوره ﺗﻮﺳﺮﺵ چهار تا فرمول ﺑﻪ ﻓﯿﺰﯾﮏ ﺍﺿﺎﻓﻪ ﻣﯿﮑﻨﻪ ﺑﺪﺑﺨﺖ می‌شیم'
@@ -240,6 +283,9 @@ class Ui_MainWindow(object):
                 elif randomjok == 11:
                     compeyoterjok  ='یه عدد بین 10 تا 20 انتخاب کن \n اون عدد رو با 32 جمع کن\nحاصل رو ضرب در 2 کن\n حاصل رو منهای 1 کن\nحالا چشماتو 5 ثانیه ببند \n . \n .\n .همه جا تاریک شد. درسته؟ \n اینو خودم درس کردم\n ما اینیم دیگه!'
 
+                self.textBrowser.append('')
+                self.textBrowser.append('-----------------------------------------------------------------------------------------------')
+                self.textBrowser.append('')
                 self.textBrowser.append((compeyoterjok))
             except:
                 self.textBrowser.append('یه مشکلی پیش اومده!!!(شاید جوک هام تموم شده)')
@@ -267,6 +313,7 @@ class Ui_MainWindow(object):
         self.site.setText(_translate("Persian assistant", "وب سایتم"))
         self.donit.setText(_translate("Persian assistant", "حمایت"))
         self.lineEdit.setPlaceholderText(_translate("Persian assistant", "دستورت رو اینجا تایپ کن"))
+        self.mic.setText(_translate("Persian assistant", "میکروفون"))
         self.menuPersian_assistant.setTitle(_translate("Persian assistant", "Persian assistant"))
 
 
