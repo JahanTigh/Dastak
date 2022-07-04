@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'Persian_assistant.ui'
-#
-# Created by: PyQt5 UI code generator 5.14.1
-#
-# WARNING! All changes made in this file will be lost!
-
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 import os
 import random
@@ -22,27 +13,27 @@ import speech_recognition as sr
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("Persian assistant")
-        MainWindow.resize(800, 800)
+        MainWindow.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
-        self.textBrowser.setGeometry(QtCore.QRect(10, 50, 781, 591))
+        self.textBrowser.setGeometry(QtCore.QRect(10, 50, 781, 391))
         font = QtGui.QFont()
-        font.setFamily("Digi Madasi Bold")
+        font.setFamily("Tahoma")
         font.setPointSize(14)
         self.textBrowser.setFont(font)
         self.textBrowser.setObjectName("textBrowser")
         self.run = QtWidgets.QPushButton(self.centralwidget)
-        self.run.setGeometry(QtCore.QRect(10, 660, 111, 91))
+        self.run.setGeometry(QtCore.QRect(10, 460, 111, 91))
         font = QtGui.QFont()
-        font.setFamily("Digi Madasi Bold")
+        font.setFamily("Tahoma")
         font.setPointSize(14)
         self.run.setFont(font)
         self.run.setObjectName("run")
         self.komack = QtWidgets.QPushButton(self.centralwidget)
         self.komack.setGeometry(QtCore.QRect(10, 10, 181, 31))
         font = QtGui.QFont()
-        font.setFamily("Digi Madasi Bold")
+        font.setFamily("Tahoma")
         font.setPointSize(11)
         font.setBold(False)
         font.setItalic(False)
@@ -52,7 +43,7 @@ class Ui_MainWindow(object):
         self.github = QtWidgets.QPushButton(self.centralwidget)
         self.github.setGeometry(QtCore.QRect(210, 10, 181, 31))
         font = QtGui.QFont()
-        font.setFamily("Digi Madasi Bold")
+        font.setFamily("Tahoma")
         font.setPointSize(11)
         font.setBold(False)
         font.setItalic(False)
@@ -62,7 +53,7 @@ class Ui_MainWindow(object):
         self.site = QtWidgets.QPushButton(self.centralwidget)
         self.site.setGeometry(QtCore.QRect(410, 10, 181, 31))
         font = QtGui.QFont()
-        font.setFamily("Digi Madasi Bold")
+        font.setFamily("Tahoma")
         font.setPointSize(11)
         font.setBold(False)
         font.setItalic(False)
@@ -72,7 +63,7 @@ class Ui_MainWindow(object):
         self.donit = QtWidgets.QPushButton(self.centralwidget)
         self.donit.setGeometry(QtCore.QRect(610, 10, 181, 31))
         font = QtGui.QFont()
-        font.setFamily("Digi Madasi Bold")
+        font.setFamily("Tahoma")
         font.setPointSize(11)
         font.setBold(False)
         font.setItalic(False)
@@ -80,17 +71,17 @@ class Ui_MainWindow(object):
         self.donit.setFont(font)
         self.donit.setObjectName("donit")
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit.setGeometry(QtCore.QRect(130, 660, 541, 91))
+        self.lineEdit.setGeometry(QtCore.QRect(130, 460, 541, 91))
         font = QtGui.QFont()
-        font.setFamily("Digi Madasi Bold")
+        font.setFamily("Tahoma")
         font.setPointSize(15)
         self.lineEdit.setFont(font)
         self.lineEdit.setText("")
         self.lineEdit.setObjectName("lineEdit")
         self.mic = QtWidgets.QPushButton(self.centralwidget)
-        self.mic.setGeometry(QtCore.QRect(680, 660, 111, 91))
+        self.mic.setGeometry(QtCore.QRect(680, 460, 111, 91))
         font = QtGui.QFont()
-        font.setFamily("Digi Madasi Bold")
+        font.setFamily("Tahoma")
         font.setPointSize(14)
         self.mic.setFont(font)
         self.mic.setObjectName("mic")
@@ -126,9 +117,9 @@ class Ui_MainWindow(object):
         app.processEvents()
         with sr.Microphone() as source:
             app.processEvents()
-            self.textBrowser.append('دارم بهت گوش می دم...(لطفا با آرامش صحبت کن تا متوجه بشم)') 
-            app.processEvents()
             r.adjust_for_ambient_noise(source)
+            app.processEvents()
+            self.textBrowser.append('دارم بهت گوش می دم...(لطفا با آرامش صحبت کن تا متوجه بشم)') 
             app.processEvents()
             audio = r.listen(source)
             app.processEvents()
@@ -138,8 +129,7 @@ class Ui_MainWindow(object):
                 self.lineEdit.setText(voice_U)
                 self.textBrowser.setText(voice_U)
                 app.processEvents()
-                self.textBrowser.append('دیگه گوش نمی دم')
-                app.processEvents()
+                self.get_data()
             except:
                 app.processEvents()
                 self.textBrowser.append("متوجه نشدم دوباره روی میکروفون ضربه بزن و امتحان کن")
@@ -152,11 +142,13 @@ class Ui_MainWindow(object):
     def donit_open(self):
         webbrowser.open_new('https://idpay.ir/yasinjahantigh')
     def help(self):
-        self.textBrowser.setText(' کار هایی که فعلا بلدم ایناس: \n رمز عبور قوی بسازم \nساعت رو بهت بگم \nتاریخ رو به میلادی بگم \nتاریخ رو به شمسی بگم \nبگم امروز چندم ماهه قمریهآ  \n برات جوک بگم \n کامپیوتر رو خاموش کنم  \n')
+        self.textBrowser.setText(' کار هایی که فعلا بلدم ایناس: \nتاس بندازم \nرمز عبور قوی بسازم \nساعت رو بهت بگم \nتاریخ رو به میلادی بگم \nتاریخ رو به شمسی بگم \nبگم امروز چندم ماهه قمریه  \n برات جوک بگم \n کامپیوتر رو خاموش کنم  \n')
 
     def get_data(self):
         input_U = self.lineEdit.text()
-        if 'پسورد' in input_U or 'رمز' in input_U or 'ms,vn' in input_U.lower() or '\s,vn' in input_U.lower() or '`s,vn`' in input_U.lower() or 'vlc' in input_U.lower():
+        if 'چه کاری بلدی' in input_U or 'چه کارهایی بلدی' in input_U:
+            self.help()
+        elif 'پسورد' in input_U or 'رمز' in input_U or 'ms,vn' in input_U.lower() or '\s,vn' in input_U.lower() or '`s,vn`' in input_U.lower() or 'vlc' in input_U.lower():
             char = string.ascii_letters + string.punctuation + string.digits       
             passw = ''.join(random.choice(char) for x in range(16))
             self.textBrowser.append(passw)
@@ -228,7 +220,7 @@ class Ui_MainWindow(object):
 
 
         elif 'تاریخ' in input_U or 'زمان' in input_U or 'ساعت' in input_U or 'امروز' in input_U or 'چندم' in input_U or 'jhvdo' in input_U.lower() or 'clhk' in input_U.lower() or 'shuj' in input_U.lower() or 'hlv,c' in input_U.lower() or ']knl' in  input_U.lower():
-            moon = pylunar.MoonInfo((35, 41, 21.308),(51,23,22.561))
+            moon = pylunar.MoonInfo((35, 42, 55.0728),(51,24,15.6348))
             today = datetime.datetime.now()
             moon.update((today.year, today.month, today.day, today.hour, today.minute, today.second))
             age = (moon.age())
@@ -242,7 +234,7 @@ class Ui_MainWindow(object):
             self.textBrowser.append(f'الان ساعت :\n{ today.hour} : {today.minute} : {today.second}')
             self.textBrowser.append(f'امروز به تاریخ شمسی : \n{chandom_shamsi}')
             self.textBrowser.append(f'امروز به تاریخ میلادی : \n{chandom_miladi}')
-            self.textBrowser.append( f'امروز « {chandom_ghamari} » ماه قمری هست(دقت کن که من هر دفعه نمی رم برات آسمون رو نگاه کنم\U0001F609\U0001F601)')
+            self.textBrowser.append( f'امروز « {chandom_ghamari} » ماه قمری به افق تهران هست(دقت کن که من هر دفعه نمی رم برات آسمون رو نگاه کنم\U0001F609\U0001F601)')
 
         elif 'تاس' in input_U or 'jhs' in input_U:
             tass = str(random.randint(1, 6))
@@ -308,13 +300,14 @@ class Ui_MainWindow(object):
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.run.setText(_translate("Persian assistant", "اجراکن"))
-        self.komack.setText(_translate("Persian assistant", "!کمک"))
+        self.komack.setText(_translate("Persian assistant", "!راهنما"))
         self.github.setText(_translate("Persian assistant", "گیت هابم"))
         self.site.setText(_translate("Persian assistant", "وب سایتم"))
         self.donit.setText(_translate("Persian assistant", "حمایت"))
         self.lineEdit.setPlaceholderText(_translate("Persian assistant", "دستورت رو اینجا تایپ کن"))
         self.mic.setText(_translate("Persian assistant", "میکروفون"))
         self.menuPersian_assistant.setTitle(_translate("Persian assistant", "Persian assistant"))
+
 
 
 if __name__ == "__main__":
@@ -325,4 +318,5 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-# =====> یاسین جهان تیغ <=====|=====> YASIN JAHAN TIGH <=====|=====> YASINJAHANTIGH@OUTLOOK.COM <=====
+
+
