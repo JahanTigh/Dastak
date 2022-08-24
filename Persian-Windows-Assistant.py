@@ -1,16 +1,26 @@
+from time import sleep, time
 from PyQt5 import QtCore, QtGui, QtWidgets
+from shahr import *
+from translate import Translator
 import os
+import requests 
 import random
 import datetime
 import string
 import webbrowser
 import pylunar
 import jdatetime
-import speech_recognition as sr 
-
+import speech_recognition as sr
+import pygame
 
 
 class Ui_MainWindow(object):
+    def show_new_window_for_ab_o_hava(self):
+        self.w = QtWidgets.QMainWindow()
+        self.ui = Ui_city()
+        self.ui.setupUi(self.w)
+        self.w.show()
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("Persian assistant")
         MainWindow.resize(800, 600)
@@ -96,7 +106,6 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.menubar.addAction(self.menuPersian_assistant.menuAction())
-
         self.retranslateUi(MainWindow)
         self.run.clicked.connect(self.get_data)
         self.mic.clicked.connect(self.get_audio)
@@ -107,10 +116,18 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.run, self.textBrowser)
         MainWindow.setTabOrder(self.textBrowser, self.komack)
-        self.textBrowser.setText('سلام \n چی کار می تونم برات انجام بدم؟')
-
-
+        self.textBrowser.setText('')
+        f = open('shahr.txt','a+' , encoding="utf8")
+        shahr = f.readlines()
+        if os.lstat("shahr.txt")[6] == 0 :
+            self.show_new_window_for_ab_o_hava()
+            red_text = "الان یه پنجره باز شده که ازت شهر رو می پرسه لطفا بازش کن"
+            self.textBrowser.setHtml(f"<p6 style=\"color:#ff0000;\" > {red_text} </p6>")
+        else:
+            self.textBrowser.append('سلام\n چی کار می تونم برات انجام بدم؟\n')
+            
     def get_audio(self):
+        app.processEvents()
         self.lineEdit.setText('')
         app.processEvents()
         r = sr.Recognizer()
@@ -119,6 +136,8 @@ class Ui_MainWindow(object):
             app.processEvents()
             r.adjust_for_ambient_noise(source)
             app.processEvents()
+            self.textBrowser.append('')
+            app.processEvents()
             self.textBrowser.append('دارم بهت گوش می دم...(لطفا با آرامش صحبت کن تا متوجه بشم)') 
             app.processEvents()
             audio = r.listen(source)
@@ -126,15 +145,207 @@ class Ui_MainWindow(object):
             try:     
                 app.processEvents()
                 voice_U = (r.recognize_google(audio, language= 'fa-IR'))
+                app.processEvents()
                 self.lineEdit.setText(voice_U)
-                self.textBrowser.setText(voice_U)
+                app.processEvents()
+                self.textBrowser.append('')
+                app.processEvents()
+                self.textBrowser.append(voice_U)
                 app.processEvents()
                 self.get_data()
+                app.processEvents()
             except:
+                app.processEvents()
+                self.textBrowser.append('')
                 app.processEvents()
                 self.textBrowser.append("متوجه نشدم دوباره روی میکروفون ضربه بزن و امتحان کن")
                 app.processEvents()
+    def passw(self):
+        char = string.ascii_letters + string.punctuation + string.digits       
+        passw = ''.join(random.choice(char) for x in range(16))
+        self.textBrowser.append('')
+        self.textBrowser.append(passw)    
+
+    def time(self):
+        moon = pylunar.MoonInfo((35, 42, 55.0728),(51,24,15.6348))
+        today = datetime.datetime.now()
+        moon.update((today.year, today.month, today.day, today.hour, today.minute, today.second))
+        age = (moon.age())
+        chandom_ghamari = int(age) + 1
+
+        chandom_shamsi = (jdatetime.date.fromgregorian(day = today.day, month = today.month, year = today.year))
+        chandom_shamsi = str(chandom_shamsi)
+
+        chandom_miladi = today.year, today.month, today.day
+        self.textBrowser.append('')
+        self.textBrowser.append(f'الان ساعت :\n{ today.hour} : {today.minute} : {today.second}')
+        self.textBrowser.append(f'امروز به تاریخ شمسی : \n{chandom_shamsi}')
+        self.textBrowser.append(f'امروز به تاریخ میلادی : \n{chandom_miladi}')
+        self.textBrowser.append( f'امروز « {chandom_ghamari} » ماه قمری به افق تهران هست(دقت کن که من هر دفعه نمی رم برات آسمون رو نگاه کنم\U0001F609\U0001F601)')
+
+    def tass(self):
+        tass = str(random.randint(1, 6))
+        self.textBrowser.append('')
+        self.textBrowser.append((f'برات تاس انداختم « {tass} » اومد'))
+        self.show_new_window()
+
+    def jok(self):
+        try:
+            f = open('jok.txt', encoding="utf8")
+            joks = f.readlines()
+            rand = random.randint(0, len(joks))
+            print (joks[rand])
+            self.textBrowser.append('')
+            self.textBrowser.append(joks[rand])
+        except:
+            self.jok()
     
+    def khamoosh(self):
+        self.textBrowser.append('')
+        self.textBrowser.append('تا ۱۱ ثانیه دیگه کامپیوتر خاموش می شه\nمسی تونی سریع من رو ببندی تا خاموش نشه')
+        sleep(11)
+        os.system('shutdown -s -t 00')
+    
+    def get_ip(self):
+        response = requests.get('https://api64.ipify.org?format=json').json()
+        return response["ip"]
+
+    
+    def ab_o_hava(self):
+        f = open('shahr.txt','r' , encoding="utf8")
+        shahr = f.read()
+        try:
+            base_url = "http://api.openweathermap.org/data/2.5/weather?"
+            complete_url = base_url + "appid=" + 'd850f7f52bf19300a9eb4b0aa6b80f0d' + "&q=" + shahr 
+            response = requests.get(complete_url)
+            x = response.json()
+
+            if x["cod"] != "404":
+                y = x["main"]
+
+                current_temperature = y["temp"]
+                z = x["weather"]
+                current_temperature = float(current_temperature) -273.15
+                weather_description = z[0]["description"]
+                translator= Translator(to_lang="fa")
+                weather_description_t = translator.translate(weather_description)
+                hava = (f'الان هوا تو {shahr} {str(current_temperature.__round__(2))} درجه سانتی‌گراده و وضعیت هوا: {str(weather_description_t)}')#" Temperature  = " + str(current_temperature) + "\n description = " + str(weather_description))
+                self.textBrowser.append(hava)
+            else:
+                self.textBrowser.append("شهر شما پیدا نشد")
+        except:
+            self.textBrowser.append('اینترنتت رو دوباره چک کن')
+
+    def ping_pong_game(self):
+        self.textBrowser.append('بفرما پینگ پونگ بازی کن')
+        pygame.init()
+
+        screen=pygame.display.set_mode((640,480),0,32)
+        pygame.display.set_caption("Pong Pong!")
+
+        #Creating 2 bars, a ball and background.
+        back = pygame.Surface((640,480))
+        background = back.convert()
+        background.fill((0,0,0))
+        bar = pygame.Surface((10,50))
+        bar1 = bar.convert()
+        bar1.fill((0,0,255))
+        bar2 = bar.convert()
+        bar2.fill((255,0,0))
+        circ_sur = pygame.Surface((15,15))
+        circ = pygame.draw.circle(circ_sur,(0,255,0),(15/2,15/2),15/2)
+        circle = circ_sur.convert()
+        circle.set_colorkey((0,0,0))
+
+        # some definitions
+        bar1_x, bar2_x = 10. , 620.
+        bar1_y, bar2_y = 215. , 215.
+        circle_x, circle_y = 307.5, 232.5
+        bar1_move, bar2_move = 0. , 0.
+        speed_x, speed_y, speed_circ = 250., 250., 250.
+        bar1_score, bar2_score = 0,0
+        #clock and font objects
+        clock = pygame.time.Clock()
+        font = pygame.font.SysFont("calibri",40)
+
+        while True:
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return pygame.quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        bar1_move = -ai_speed
+                    elif event.key == pygame.K_DOWN:
+                        bar1_move = ai_speed
+                elif event.type == pygame.KEYUP:
+                    if event.key == pygame.K_UP:
+                        bar1_move = 0.
+                    elif event.key == pygame.K_DOWN:
+                        bar1_move = 0.
+            
+            score1 = font.render(str(bar1_score), True,(255,255,255))
+            score2 = font.render(str(bar2_score), True,(255,255,255))
+
+            screen.blit(background,(0,0))
+            frame = pygame.draw.rect(screen,(255,255,255),pygame.Rect((5,5),(630,470)),2)
+            middle_line = pygame.draw.aaline(screen,(255,255,255),(330,5),(330,475))
+            screen.blit(bar1,(bar1_x,bar1_y))
+            screen.blit(bar2,(bar2_x,bar2_y))
+            screen.blit(circle,(circle_x,circle_y))
+            screen.blit(score1,(250.,210.))
+            screen.blit(score2,(380.,210.))
+
+            bar1_y += bar1_move
+            
+        # movement of circle
+            time_passed = clock.tick(30)
+            time_sec = time_passed / 1000.0
+            
+            circle_x += speed_x * time_sec
+            circle_y += speed_y * time_sec
+            ai_speed = speed_circ * time_sec
+        #AI of the computer.
+            if circle_x >= 305.:
+                if not bar2_y == circle_y + 7.5:
+                    if bar2_y < circle_y + 7.5:
+                        bar2_y += ai_speed
+                    if  bar2_y > circle_y - 42.5:
+                        bar2_y -= ai_speed
+                else:
+                    bar2_y == circle_y + 7.5
+            
+            if bar1_y >= 420.: bar1_y = 420.
+            elif bar1_y <= 10. : bar1_y = 10.
+            if bar2_y >= 420.: bar2_y = 420.
+            elif bar2_y <= 10.: bar2_y = 10.
+        #since i don't know anything about collision, ball hitting bars goes like this.
+            if circle_x <= bar1_x + 10.:
+                if circle_y >= bar1_y - 7.5 and circle_y <= bar1_y + 42.5:
+                    circle_x = 20.
+                    speed_x = -speed_x
+            if circle_x >= bar2_x - 15.:
+                if circle_y >= bar2_y - 7.5 and circle_y <= bar2_y + 42.5:
+                    circle_x = 605.
+                    speed_x = -speed_x
+            if circle_x < 5.:
+                bar2_score += 1
+                circle_x, circle_y = 320., 232.5
+                bar1_y,bar_2_y = 215., 215.
+            elif circle_x > 620.:
+                bar1_score += 1
+                circle_x, circle_y = 307.5, 232.5
+                bar1_y, bar2_y = 215., 215.
+            if circle_y <= 10.:
+                speed_y = -speed_y
+                circle_y = 10.
+            elif circle_y >= 457.5:
+                speed_y = -speed_y
+                circle_y = 457.5
+
+            pygame.display.update()
+
+
     def site_open(self):
         webbrowser.open_new('http://jahantigh.gigfa.com/')
     def github_open(self):
@@ -149,146 +360,36 @@ class Ui_MainWindow(object):
         if 'چه کاری بلدی' in input_U or 'چه کارهایی بلدی' in input_U:
             self.help()
         elif 'پسورد' in input_U or 'رمز' in input_U or 'ms,vn' in input_U.lower() or '\s,vn' in input_U.lower() or '`s,vn`' in input_U.lower() or 'vlc' in input_U.lower():
-            char = string.ascii_letters + string.punctuation + string.digits       
-            passw = ''.join(random.choice(char) for x in range(16))
-            self.textBrowser.append(passw)
-        
-
-        # elif 'سنگ' in input_U or 'بازی' in input_U: #TODO اینجا برای ورودی گرفتن از کاربر مشکل دارم ممنون می شم کمک کنید
-        #     self.textBrowser.setText('سنگ...')
-        #     self.textBrowser.setText('کاغذ...')
-        #     self.textBrowser.setText('قیچی...')
-        #     self.textBrowser.setText('--------------------------')
-
-        #     randomNumber = random.randint(0, 2)
-
-        #     if randomNumber == 0:
-        #         computerMove = 'سنگ' #rock
-        #     elif randomNumber == 1:
-        #         computerMove = 'کاغذ' #paper
-        #     elif randomNumber == 2:
-        #         computerMove = 'قیچی'#scissors
-
-        #     player1_wins = 0
-        #     player2_wins = 0
-        #     self.textBrowser.setText(('چند دست می خوای بازی کنی؟'))
-        #     while True:
-        #         try:
-        #             winning_score = self.lineEdit.text()
-        #             winning_score = int(winning_score)
-        #         except:
-        #             self.textBrowser.setText('b')
-        #             break
-
-        #     while player1_wins < winning_score and player2_wins < winning_score:
-        #         self.textBrowser.setText(f'شما : {player1_wins} کامپیوتر : {player2_wins}')
-        #         self.textBrowser.setText(('حرکت شما'))
-        #         Player_1 = input()
-        #         self.textBrowser.setText(('حرکت کامپیوتر:'))
-        #         self.textBrowser.setText((computerMove))
-        #         Player_2 = computerMove
-
-        #         if Player_1 == Player_2:
-        #             self.textBrowser.setText(('مساوی...'))
-        #         elif Player_1 == 'سنگ':
-        #             if Player_2 == 'قیچی':
-        #                 self.textBrowser.setText(('تو برنده شدی!...'))
-        #                 player1_wins += 1
-        #             elif Player_2 == 'کاغذ':
-        #                 self.textBrowser.setText(('کامپیوتر برنده شد!...'))
-        #                 player2_wins += 1
-        #         elif Player_1 == 'کاغذ':
-        #             if Player_2 == 'سنگ':
-        #                 self.textBrowser.setText(('تو برنده شدی!...'))
-        #                 player1_wins += 1
-        #             elif Player_2 == 'قیچی':
-        #                 self.textBrowser.setText(('کامپیوتر برنده شد!...'))
-        #                 player2_wins += 1
-        #         elif Player_1 == 'قیچی':
-        #             if Player_2 == 'کاغذ':
-        #                 self.textBrowser.setText(('تو برنده شدی!...'))
-        #                 player1_wins += 1
-        #             elif Player_2 == 'سنگ':
-        #                 self.textBrowser.setText(('کامپیوتر برنده شد!...'))
-        #                 player2_wins += 1
-        #         else:
-        #             self.textBrowser.setText(('یه چیزی اشتباهه!...'))
-
-        #     self.textBrowser.setText(('بازی تموم شد!...'))
-
-        #     self.textBrowser.setText(f' شما : {player1_wins} | کامپیوتر : {player2_wins}')
-
-
+            self.passw()
+    
         elif 'تاریخ' in input_U or 'زمان' in input_U or 'ساعت' in input_U or 'امروز' in input_U or 'چندم' in input_U or 'jhvdo' in input_U.lower() or 'clhk' in input_U.lower() or 'shuj' in input_U.lower() or 'hlv,c' in input_U.lower() or ']knl' in  input_U.lower():
-            moon = pylunar.MoonInfo((35, 42, 55.0728),(51,24,15.6348))
-            today = datetime.datetime.now()
-            moon.update((today.year, today.month, today.day, today.hour, today.minute, today.second))
-            age = (moon.age())
-            chandom_ghamari = int(age) + 1
-
-            chandom_shamsi = (jdatetime.date.fromgregorian(day = today.day, month = today.month, year = today.year))
-            chandom_shamsi = str(chandom_shamsi)
-
-            chandom_miladi = today.year, today.month, today.day
-
-            self.textBrowser.append(f'الان ساعت :\n{ today.hour} : {today.minute} : {today.second}')
-            self.textBrowser.append(f'امروز به تاریخ شمسی : \n{chandom_shamsi}')
-            self.textBrowser.append(f'امروز به تاریخ میلادی : \n{chandom_miladi}')
-            self.textBrowser.append( f'امروز « {chandom_ghamari} » ماه قمری به افق تهران هست(دقت کن که من هر دفعه نمی رم برات آسمون رو نگاه کنم\U0001F609\U0001F601)')
+            self.time()
 
         elif 'تاس' in input_U or 'jhs' in input_U:
-            tass = str(random.randint(1, 6))
-            self.textBrowser.append((f'برات تاس انداختم « {tass} » اومد'))
-
-
+            self.tass()
 
         elif 'جوک' in input_U or '[,;' in input_U.lower():
-            try:
-                randomjok = random.randint(1, 11)
-                if randomjok == 1:
-                    compeyoterjok = 'چن وخ پیش به پسر عموم گفتم واسم ایمیل بساز رمزشم واسم بفرست گفت باشه آدرس ایمیلمو فرستاد، گفتم پس رمزش کو؟ گفت واست ایمیل کردم من قضاوت رو به کارشناسا واگذار میکنم '
-                
-                elif randomjok == 2:
-                    compeyoterjok ='تخمه آفتابگردون كيلويی 39 تومن تسبيح دونه‌ای 40 تومن كاپشن پفی 400 تومن شلوار شيش جيب 280 تومن كتونی تايگر فيک 180 تومن! واسه سر كوچه الاف واستادن و تخمه شكستن تو ايران الان حدودا ۱ تومن سرمايه لازمه! '
-
-                elif randomjok == 3:
-                    compeyoterjok ='سوالات متداول از مامان: گشنمه….  شام کی حاضر میشه!؟  سردمه!!  پیرهنم کجاست!؟  اون شلوار مشکیمو شستی!؟  نمیتونم پیداش کنم!!  ناهارچی داریم!؟  این چرا اتو نداره!؟  سوالات متداول از بابا: مامان کجاست؟! '
-
-                elif randomjok == 4:
-                    compeyoterjok ='یک معمای خیلی جالب: سه تابچه تو خونه بودن اولی عشق نام داشت دومی محبت نام داشت و سومی دوستت دارم بود یک روز پدرشان عشق و محبت رابه بازار برد حالا بگو کی خونه مونده؟؟؟؟ نشنیدم بازم بگو؟ واقعاً؟!!!!! '
-
-                elif randomjok == 5:
-                    compeyoterjok ='یارو میره هارد بخره میگه هارد 640 میخوام حیف نون هارد 500 میاره بهش میگه گفتم 640 میگه: ناراحت نباش جا وا می‌کنه…!!! '
-
-                elif randomjok == 7:
-                    compeyoterjok ='کبوتر با کبوتر باز باران با ترانه میخورد بر بامش بیش برفش بیشتر آمدی جانم به قربانت ولی حالا چرا عاقل کند کاری که باز آید به کنعان غم مخور خربزه با پوست موزو میندازی زمین هوا میره نمیدونی تا کجا میره!! '
-
-                elif randomjok == 8:
-                    compeyoterjok ='ای کسانی که با خیال راحت ماسک فیلتر دار استفاده می‌کنید! بدانید و آگاه باشید که کرونا در ایران مانند شهروندان این کشور به فیلتر شکن مجهز است!!'
-
-                elif randomjok == 9:
-                    compeyoterjok ='آب رﯾﺰﺵ ﺑﯿﻨﻰ ﺩﺍﺭﻡ. ﺭﻓﺘﻢ ﺩﺍﺭﻭﺧﻮﻧﻪ ﻗﺮﺹ ﺿﺪﺣﺴﺎﺳﯿﺖ ﺑﮕﯿﺮﻡ. ﺗﻮ ﻋﻮﺍﺭﺽ ﺟﺎﻧﺒﯿﺶ ﻧﻮﺷﺘﻪ ﺳﺮ ﺩﺭﺩ و ﺳﺮ ﮔﯿﺠﻪ ﺣﺎﻟﺖ تهوع ﺍﺧﺘﻼﻝ ﺩﺭ ﺧﻮﺍﺏ ﻧﺎﺭﺳﺎﯾﻰ ﮐﺒﺪ ﺳﮑﺘﻪ ﻗﺒﻠﻰ و ﺳﮑﺘﻪ ﻯ ﻣﻐﺰﻯﻣﺮﮒ ﻧﺎﮔﮭﺎﻧﻰ!… ﮪﯿﭽﻰ ﺩﯾﮕﻪ … ﭘﺸﯿﻤﻮﻥ ﺷﺪﻡ با آستینم پاکش می‌کنم ﺍﻣﻨﯿﺘﺶ ﺑﯿﺸﺘﺮﻩ؟!'
-
-                elif randomjok == 10:
-                    compeyoterjok ='ﺍﮔﺮ ﺩﯾﺪﯼ ﺟﻮﺍﻧﯽ ﺑﺮﺩﺭﺧﺘﯽ ﺗﮑﯿﻪ ﮐﺮﺩﻩ ﺳﺮﯾﻊ ﺑﯿﺎﺭﯾﺪﺵ ﮐﻨﺎﺭ ﯾﻬﻮ ﮔﻼﺑﯽ ﭼﯿﺰﯼ می‌خوره ﺗﻮﺳﺮﺵ چهار تا فرمول ﺑﻪ ﻓﯿﺰﯾﮏ ﺍﺿﺎﻓﻪ ﻣﯿﮑﻨﻪ ﺑﺪﺑﺨﺖ می‌شیم'
-                
-                elif randomjok == 11:
-                    compeyoterjok  ='یه عدد بین 10 تا 20 انتخاب کن \n اون عدد رو با 32 جمع کن\nحاصل رو ضرب در 2 کن\n حاصل رو منهای 1 کن\nحالا چشماتو 5 ثانیه ببند \n . \n .\n .همه جا تاریک شد. درسته؟ \n اینو خودم درس کردم\n ما اینیم دیگه!'
-
-                self.textBrowser.append('')
-                self.textBrowser.append('-----------------------------------------------------------------------------------------------')
-                self.textBrowser.append('')
-                self.textBrowser.append((compeyoterjok))
-            except:
-                self.textBrowser.append('یه مشکلی پیش اومده!!!(شاید جوک هام تموم شده)')
-
+            self.jok()
 
         elif 'خاموش' in input_U or 'شات دان' in input_U or 'شاتدان' in input_U or 'ohl,a' in input_U.lower() or 'ahj nhk' in input_U.lower() or 'ahjnhk' in input_U.lower():
-            os.system("shutdown -s -t 11")
-            self.textBrowser.append('تا 11 ثانیه دیگه کامپیوتر خاموش میشه !')
+            self.khamoosh()
 
-        else: 
-            self.textBrowser.append(('متوجه نشدم یک بار دیگه دستورت رو بنویس (احتمالا کاری رو که می خوای من بلد نیستم\U0001F614)'))
+        elif 'ip' in  input_U.lower() or 'آی پی' in input_U or 'آیپی' in input_U or 'hdmd' in input_U.lower() or 'hd md' in input_U.lower() or 'ای پی' in input_U or 'ایپی' in input_U:
+            self.textBrowser.append('')
+            self.textBrowser.append('الان بهت می گم...')
+            self.textBrowser.append('')
+            self.textBrowser.append(f'\nآی پی تو الان «{self.get_ip()}» هست')
+
+        elif 'هوا' in input_U or 'درجه' in input_U or 'i,h' in input_U.lower() or 'nv[i' in input_U.lower():
+            self.textBrowser.append('')
+            self.textBrowser.append('وایسا برم آسمون رو نگاه کنم\U0001F601')
+            self.ab_o_hava()
+        
+        elif 'بازی' in input_U or 'گیم' in input_U or 'fhcd' in input_U.lower() or "'dl" in input_U.lower() or 'game' in input_U.lower():
+            self.ping_pong_game()
+
+        else:
+            self.textBrowser.append(('\nمتوجه نشدم یک بار دیگه دستورت رو بنویس (احتمالا کاری رو که می خوای من بلد نیستم\U0001F614)'))
 
 
     def retranslateUi(self, MainWindow):
@@ -318,5 +419,3 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
-
