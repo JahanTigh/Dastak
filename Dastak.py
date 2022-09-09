@@ -1,17 +1,16 @@
-from time import sleep, time
+from time import sleep
 from PyQt5 import QtCore, QtGui, QtWidgets
+from bs4 import BeautifulSoup
 from shahr import *
-from translate import Translator
+from ping_pong_game import *
 import os
 import requests 
 import random
 import datetime
 import string
 import webbrowser
-import pylunar
 import jdatetime
 import speech_recognition as sr
-import pygame
 
 
 class Ui_MainWindow(object):
@@ -28,23 +27,26 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
         self.textBrowser.setGeometry(QtCore.QRect(10, 50, 781, 391))
+        self.textBrowser.setStyleSheet("border-radius : 22px;")
         font = QtGui.QFont()
-        font.setFamily("Tahoma")
-        font.setPointSize(14)
+        font.setFamily("Digi Hekayat Bold")
+        font.setPointSize(22)
         self.textBrowser.setFont(font)
         self.textBrowser.setObjectName("textBrowser")
         self.run = QtWidgets.QPushButton(self.centralwidget)
-        self.run.setGeometry(QtCore.QRect(10, 460, 111, 91))
+        self.run.setGeometry(QtCore.QRect(10, 458, 111, 91))
+        self.run.setStyleSheet("border : 1px solid black; border-radius : 20px;")
         font = QtGui.QFont()
-        font.setFamily("Tahoma")
-        font.setPointSize(14)
+        font.setFamily("Digi Hekayat Bold")
+        font.setPointSize(22)
         self.run.setFont(font)
         self.run.setObjectName("run")
         self.komack = QtWidgets.QPushButton(self.centralwidget)
         self.komack.setGeometry(QtCore.QRect(10, 10, 181, 31))
+        self.komack.setStyleSheet("border : 1px solid black; border-radius : 10px;")
         font = QtGui.QFont()
-        font.setFamily("Tahoma")
-        font.setPointSize(11)
+        font.setFamily("Digi Hekayat Bold")
+        font.setPointSize(18)
         font.setBold(False)
         font.setItalic(False)
         font.setWeight(50)
@@ -52,9 +54,10 @@ class Ui_MainWindow(object):
         self.komack.setObjectName("komack")
         self.github = QtWidgets.QPushButton(self.centralwidget)
         self.github.setGeometry(QtCore.QRect(210, 10, 181, 31))
+        self.github.setStyleSheet("border : 1px solid black; border-radius : 10px;")
         font = QtGui.QFont()
-        font.setFamily("Tahoma")
-        font.setPointSize(11)
+        font.setFamily("Digi Hekayat Bold")
+        font.setPointSize(18)
         font.setBold(False)
         font.setItalic(False)
         font.setWeight(50)
@@ -62,9 +65,10 @@ class Ui_MainWindow(object):
         self.github.setObjectName("github")
         self.site = QtWidgets.QPushButton(self.centralwidget)
         self.site.setGeometry(QtCore.QRect(410, 10, 181, 31))
+        self.site.setStyleSheet("border : 1px solid black; border-radius : 10px;")
         font = QtGui.QFont()
-        font.setFamily("Tahoma")
-        font.setPointSize(11)
+        font.setFamily("Digi Hekayat Bold")
+        font.setPointSize(18)
         font.setBold(False)
         font.setItalic(False)
         font.setWeight(50)
@@ -72,27 +76,30 @@ class Ui_MainWindow(object):
         self.site.setObjectName("site")
         self.donit = QtWidgets.QPushButton(self.centralwidget)
         self.donit.setGeometry(QtCore.QRect(610, 10, 181, 31))
+        self.donit.setStyleSheet("border : 1px solid black; border-radius : 10px;")
         font = QtGui.QFont()
-        font.setFamily("Tahoma")
-        font.setPointSize(11)
+        font.setFamily("Digi Hekayat Bold")
+        font.setPointSize(18)
         font.setBold(False)
         font.setItalic(False)
         font.setWeight(50)
         self.donit.setFont(font)
         self.donit.setObjectName("donit")
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit.setGeometry(QtCore.QRect(130, 460, 541, 91))
+        self.lineEdit.setGeometry(QtCore.QRect(130, 458, 541, 91))
+        self.lineEdit.setStyleSheet("border : 1px solid black; border-radius : 20px;")
         font = QtGui.QFont()
-        font.setFamily("Tahoma")
-        font.setPointSize(15)
+        font.setFamily("Digi Hekayat Bold")
+        font.setPointSize(22)
         self.lineEdit.setFont(font)
         self.lineEdit.setText("")
         self.lineEdit.setObjectName("lineEdit")
         self.mic = QtWidgets.QPushButton(self.centralwidget)
-        self.mic.setGeometry(QtCore.QRect(680, 460, 111, 91))
+        self.mic.setGeometry(QtCore.QRect(680, 458, 111, 91))
+        self.mic.setStyleSheet("border : 1px solid black; border-radius : 20px;")
         font = QtGui.QFont()
-        font.setFamily("Tahoma")
-        font.setPointSize(14)
+        font.setFamily("Digi Hekayat Bold")
+        font.setPointSize(21)
         self.mic.setFont(font)
         self.mic.setObjectName("mic")
         MainWindow.setCentralWidget(self.centralwidget)
@@ -118,90 +125,70 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.textBrowser, self.komack)
         self.textBrowser.setText('')
         f = open('shahr.txt','a+' , encoding="utf8")
-        shahr = f.readlines()
+        
         if os.lstat("shahr.txt")[6] == 0 :
             self.show_new_window_for_ab_o_hava()
             red_text = "الان یه پنجره باز شده که ازت شهر رو می پرسه لطفا بازش کن"
             self.textBrowser.setHtml(f"<p6 style=\"color:#ff0000;\" > {red_text} </p6>")
         else:
             self.textBrowser.append('سلام\n چی کار می تونم برات انجام بدم؟\n')
-            
+        global joks
+        f = open('jok.txt', encoding="utf8")
+        joks = f.readlines()
+
+
+
+          
     def get_audio(self):
-        app.processEvents()
         self.lineEdit.setText('')
-        app.processEvents()
         r = sr.Recognizer()
-        app.processEvents()
         with sr.Microphone() as source:
-            app.processEvents()
             r.adjust_for_ambient_noise(source)
             app.processEvents()
-            self.textBrowser.append('')
-            app.processEvents()
-            self.textBrowser.append('دارم بهت گوش می دم...(لطفا با آرامش صحبت کن تا متوجه بشم)') 
+            self.textBrowser.append('\nدارم بهت گوش می دم...(لطفا با آرامش صحبت کن تا متوجه بشم)') 
             app.processEvents()
             audio = r.listen(source)
             app.processEvents()
             try:     
-                app.processEvents()
                 voice_U = (r.recognize_google(audio, language= 'fa-IR'))
                 app.processEvents()
                 self.lineEdit.setText(voice_U)
                 app.processEvents()
-                self.textBrowser.append('')
-                app.processEvents()
-                self.textBrowser.append(voice_U)
-                app.processEvents()
+                self.textBrowser.append('\n'+voice_U)
                 self.get_data()
-                app.processEvents()
             except:
-                app.processEvents()
-                self.textBrowser.append('')
-                app.processEvents()
-                self.textBrowser.append("متوجه نشدم دوباره روی میکروفون ضربه بزن و امتحان کن")
-                app.processEvents()
+                self.textBrowser.append("\nمتوجه نشدم دوباره روی میکروفون ضربه بزن و امتحان کن")
     def passw(self):
         char = string.ascii_letters + string.punctuation + string.digits       
         passw = ''.join(random.choice(char) for x in range(16))
-        self.textBrowser.append('')
-        self.textBrowser.append(passw)    
+        self.textBrowser.append('\n'+passw)    
 
     def time(self):
-        moon = pylunar.MoonInfo((35, 42, 55.0728),(51,24,15.6348))
         today = datetime.datetime.now()
-        moon.update((today.year, today.month, today.day, today.hour, today.minute, today.second))
-        age = (moon.age())
-        chandom_ghamari = int(age) + 1
-
+        r = requests.get('https://www.time.ir/')
+        soup = BeautifulSoup(r.text, 'html.parser')
+        chandom_ghamari = soup.find('span', attrs={'id':"ctl00_cphTop_Sampa_Web_View_TimeUI_ShowDate00cphTop_3734_lblHijri"}).text
         chandom_shamsi = (jdatetime.date.fromgregorian(day = today.day, month = today.month, year = today.year))
         chandom_shamsi = str(chandom_shamsi)
-
         chandom_miladi = today.year, today.month, today.day
-        self.textBrowser.append('')
-        self.textBrowser.append(f'الان ساعت :\n{ today.hour} : {today.minute} : {today.second}')
+        self.textBrowser.append(f'\nالان ساعت :\n{ today.hour} : {today.minute} : {today.second}')
         self.textBrowser.append(f'امروز به تاریخ شمسی : \n{chandom_shamsi}')
         self.textBrowser.append(f'امروز به تاریخ میلادی : \n{chandom_miladi}')
-        self.textBrowser.append( f'امروز « {chandom_ghamari} » ماه قمری به افق تهران هست(دقت کن که من هر دفعه نمی رم برات آسمون رو نگاه کنم\U0001F609\U0001F601)')
+        self.textBrowser.append(f'امروز به تاریخ قمری : \n{chandom_ghamari}')
 
     def tass(self):
         tass = str(random.randint(1, 6))
-        self.textBrowser.append('')
-        self.textBrowser.append((f'برات تاس انداختم « {tass} » اومد'))
-        self.show_new_window()
+        self.textBrowser.append((f'\nبرات تاس انداختم « {tass} » اومد'))
 
     def jok(self):
-        try:
-            f = open('jok.txt', encoding="utf8")
-            joks = f.readlines()
-            rand = random.randint(0, len(joks))
-            print (joks[rand])
-            self.textBrowser.append('')
-            self.textBrowser.append(joks[rand])
-        except:
-            self.jok()
+        if len(joks) == 0:
+            self.textBrowser.append('\nجوک هام تموم شد!!!')
+        else:
+            randomjok = random.choice(joks)
+            joks.remove(randomjok)
+            self.textBrowser.append('\n'+randomjok)
     
     def khamoosh(self):
-        self.textBrowser.append('')
         self.textBrowser.append('تا ۱۱ ثانیه دیگه کامپیوتر خاموش می شه\nمسی تونی سریع من رو ببندی تا خاموش نشه')
         sleep(11)
         os.system('shutdown -s -t 00')
@@ -227,8 +214,7 @@ class Ui_MainWindow(object):
                 z = x["weather"]
                 current_temperature = float(current_temperature) -273.15
                 weather_description = z[0]["description"]
-                translator= Translator(to_lang="fa")
-                weather_description_t = translator.translate(weather_description)
+                weather_description_t = (weather_description)
                 hava = (f'الان هوا تو {shahr} {str(current_temperature.__round__(2))} درجه سانتی‌گراده و وضعیت هوا: {str(weather_description_t)}')#" Temperature  = " + str(current_temperature) + "\n description = " + str(weather_description))
                 self.textBrowser.append(hava)
             else:
@@ -236,114 +222,7 @@ class Ui_MainWindow(object):
         except:
             self.textBrowser.append('اینترنتت رو دوباره چک کن')
 
-    def ping_pong_game(self):
-        self.textBrowser.append('بفرما پینگ پونگ بازی کن')
-        pygame.init()
-
-        screen=pygame.display.set_mode((640,480),0,32)
-        pygame.display.set_caption("Pong Pong!")
-
-        #Creating 2 bars, a ball and background.
-        back = pygame.Surface((640,480))
-        background = back.convert()
-        background.fill((0,0,0))
-        bar = pygame.Surface((10,50))
-        bar1 = bar.convert()
-        bar1.fill((0,0,255))
-        bar2 = bar.convert()
-        bar2.fill((255,0,0))
-        circ_sur = pygame.Surface((15,15))
-        circ = pygame.draw.circle(circ_sur,(0,255,0),(15/2,15/2),15/2)
-        circle = circ_sur.convert()
-        circle.set_colorkey((0,0,0))
-
-        # some definitions
-        bar1_x, bar2_x = 10. , 620.
-        bar1_y, bar2_y = 215. , 215.
-        circle_x, circle_y = 307.5, 232.5
-        bar1_move, bar2_move = 0. , 0.
-        speed_x, speed_y, speed_circ = 250., 250., 250.
-        bar1_score, bar2_score = 0,0
-        #clock and font objects
-        clock = pygame.time.Clock()
-        font = pygame.font.SysFont("calibri",40)
-
-        while True:
-            
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return pygame.quit()
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_UP:
-                        bar1_move = -ai_speed
-                    elif event.key == pygame.K_DOWN:
-                        bar1_move = ai_speed
-                elif event.type == pygame.KEYUP:
-                    if event.key == pygame.K_UP:
-                        bar1_move = 0.
-                    elif event.key == pygame.K_DOWN:
-                        bar1_move = 0.
-            
-            score1 = font.render(str(bar1_score), True,(255,255,255))
-            score2 = font.render(str(bar2_score), True,(255,255,255))
-
-            screen.blit(background,(0,0))
-            frame = pygame.draw.rect(screen,(255,255,255),pygame.Rect((5,5),(630,470)),2)
-            middle_line = pygame.draw.aaline(screen,(255,255,255),(330,5),(330,475))
-            screen.blit(bar1,(bar1_x,bar1_y))
-            screen.blit(bar2,(bar2_x,bar2_y))
-            screen.blit(circle,(circle_x,circle_y))
-            screen.blit(score1,(250.,210.))
-            screen.blit(score2,(380.,210.))
-
-            bar1_y += bar1_move
-            
-        # movement of circle
-            time_passed = clock.tick(30)
-            time_sec = time_passed / 1000.0
-            
-            circle_x += speed_x * time_sec
-            circle_y += speed_y * time_sec
-            ai_speed = speed_circ * time_sec
-        #AI of the computer.
-            if circle_x >= 305.:
-                if not bar2_y == circle_y + 7.5:
-                    if bar2_y < circle_y + 7.5:
-                        bar2_y += ai_speed
-                    if  bar2_y > circle_y - 42.5:
-                        bar2_y -= ai_speed
-                else:
-                    bar2_y == circle_y + 7.5
-            
-            if bar1_y >= 420.: bar1_y = 420.
-            elif bar1_y <= 10. : bar1_y = 10.
-            if bar2_y >= 420.: bar2_y = 420.
-            elif bar2_y <= 10.: bar2_y = 10.
-        #since i don't know anything about collision, ball hitting bars goes like this.
-            if circle_x <= bar1_x + 10.:
-                if circle_y >= bar1_y - 7.5 and circle_y <= bar1_y + 42.5:
-                    circle_x = 20.
-                    speed_x = -speed_x
-            if circle_x >= bar2_x - 15.:
-                if circle_y >= bar2_y - 7.5 and circle_y <= bar2_y + 42.5:
-                    circle_x = 605.
-                    speed_x = -speed_x
-            if circle_x < 5.:
-                bar2_score += 1
-                circle_x, circle_y = 320., 232.5
-                bar1_y,bar_2_y = 215., 215.
-            elif circle_x > 620.:
-                bar1_score += 1
-                circle_x, circle_y = 307.5, 232.5
-                bar1_y, bar2_y = 215., 215.
-            if circle_y <= 10.:
-                speed_y = -speed_y
-                circle_y = 10.
-            elif circle_y >= 457.5:
-                speed_y = -speed_y
-                circle_y = 457.5
-
-            pygame.display.update()
+        
 
 
     def site_open(self):
@@ -353,7 +232,7 @@ class Ui_MainWindow(object):
     def donit_open(self):
         webbrowser.open_new('https://idpay.ir/yasinjahantigh')
     def help(self):
-        self.textBrowser.setText(' کار هایی که فعلا بلدم ایناس: \nتاس بندازم \nرمز عبور قوی بسازم \nساعت رو بهت بگم \nتاریخ رو به میلادی بگم \nتاریخ رو به شمسی بگم \nبگم امروز چندم ماهه قمریه  \n برات جوک بگم \n کامپیوتر رو خاموش کنم  \n')
+        self.textBrowser.setText('برات پسورد بسازم\nساعت رو بگم\nتاریخ رو به شمسی، میلادی و قمری بگم\nبرات تاس بندازم\nبرات جوک بگم\nآی‌پی (IP) دستگاهت رو بگم\nآب‌و‌هوا رو بهت بگم\nباهات پینگ پونگ بازی کنم\nدستگاهت رو خاموش کنم')
 
     def get_data(self):
         input_U = self.lineEdit.text()
@@ -375,18 +254,16 @@ class Ui_MainWindow(object):
             self.khamoosh()
 
         elif 'ip' in  input_U.lower() or 'آی پی' in input_U or 'آیپی' in input_U or 'hdmd' in input_U.lower() or 'hd md' in input_U.lower() or 'ای پی' in input_U or 'ایپی' in input_U:
-            self.textBrowser.append('')
-            self.textBrowser.append('الان بهت می گم...')
-            self.textBrowser.append('')
+            self.textBrowser.append('\nالان بهت می گم...\n')
             self.textBrowser.append(f'\nآی پی تو الان «{self.get_ip()}» هست')
 
         elif 'هوا' in input_U or 'درجه' in input_U or 'i,h' in input_U.lower() or 'nv[i' in input_U.lower():
-            self.textBrowser.append('')
-            self.textBrowser.append('وایسا برم آسمون رو نگاه کنم\U0001F601')
+            self.textBrowser.append('\nوایسا برم آسمون رو نگاه کنم\U0001F601')
             self.ab_o_hava()
         
         elif 'بازی' in input_U or 'گیم' in input_U or 'fhcd' in input_U.lower() or "'dl" in input_U.lower() or 'game' in input_U.lower():
-            self.ping_pong_game()
+            self.textBrowser.append('بفرما پینگ پونگ بازی کن')
+            ping_pong_game()
 
         else:
             self.textBrowser.append(('\nمتوجه نشدم یک بار دیگه دستورت رو بنویس (احتمالا کاری رو که می خوای من بلد نیستم\U0001F614)'))
