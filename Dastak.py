@@ -11,7 +11,6 @@ import string
 import webbrowser
 import jdatetime
 import speech_recognition as sr
-from translate import translator
 
 
 
@@ -145,7 +144,9 @@ class Ui_MainWindow(object):
     def get_audio(self):
         self.lineEdit.setText('')
         r = sr.Recognizer()
+        app.processEvents()
         with sr.Microphone() as source:
+            app.processEvents()
             r.adjust_for_ambient_noise(source)
             app.processEvents()
             self.textBrowser.append('\nدارم بهت گوش می دم...(لطفا با آرامش صحبت کن تا متوجه بشم)') 
@@ -159,6 +160,7 @@ class Ui_MainWindow(object):
                 self.lineEdit.setText(voice_U)
                 app.processEvents()
                 self.textBrowser.append('\n'+voice_U)
+                app.processEvents()
                 self.get_data()
             except:
                 self.textBrowser.append("\nمتوجه نشدم دوباره روی میکروفون ضربه بزن و امتحان کن")
@@ -203,25 +205,31 @@ class Ui_MainWindow(object):
 
     
     def ab_o_hava(self):
-        self.textBrowser.append('\nوایسا برم آسمون رو نگاه کنم\U0001F601')
-        f = open(f"C:\\Users\\{os.getlogin()}\\Documents\\shahr.txt",'r' , encoding="utf-8")
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
-        city = f.read()
-        city = city + " weather"
-        city = city.replace(" ", "+")
-        res = requests.get(
-            f'https://www.google.com/search?q={city}&hl=fa&oq={city}&aqs=chrome.0.35i39l2j0l4j46j69i60.6128j1j7&sourceid=chrome&ie=UTF-8', headers=headers)
-        soup = BeautifulSoup(res.text, 'html.parser')
-        location = soup.select('#wob_loc')[0].getText().strip()
-        time = soup.select('#wob_dts')[0].getText().strip()
-        info = soup.select('#wob_dc')[0].getText().strip()
-        weather = soup.select('#wob_tm')[0].getText().strip()
-        self.textBrowser.append('\n'+location)
-        self.textBrowser.append(time)
-        self.textBrowser.append(info)
-        self.textBrowser.append(weather+"°C")
-
+        try:
+            self.textBrowser.append('\nوایسا برم آسمون رو نگاه کنم\U0001F601')
+            f = open(f"C:\\Users\\{os.getlogin()}\\Documents\\shahr.txt",'r' , encoding="utf-8")
+            headers = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+            city = f.read()
+            city = city + " weather"
+            city = city.replace(" ", "+")
+            res = requests.get(
+                f'https://www.google.com/search?q={city}&hl=fa&oq={city}&aqs=chrome.0.35i39l2j0l4j46j69i60.6128j1j7&sourceid=chrome&ie=UTF-8', headers=headers)
+            soup = BeautifulSoup(res.text, 'html.parser')
+            location = soup.select('#wob_loc')[0].getText().strip()
+            time = soup.select('#wob_dts')[0].getText().strip()
+            info = soup.select('#wob_dc')[0].getText().strip()
+            weather = soup.select('#wob_tm')[0].getText().strip()
+            self.textBrowser.append('\n'+location)
+            self.textBrowser.append(time)
+            self.textBrowser.append(info)
+            self.textBrowser.append(weather+"°C")
+        except Exception as e:
+            error = str(sys.exc_info()[1])[:12]
+            if error == 'HTTPSConnect':
+                self.textBrowser.append('به اینترنت وصل نیستی!!!')
+            else:
+                self.textBrowser.append('یه مشکلی هست!!!')
         
     def site_open(self):
         webbrowser.open_new('http://jahantigh.gigfa.com/')
