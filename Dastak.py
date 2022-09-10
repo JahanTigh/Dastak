@@ -11,6 +11,8 @@ import string
 import webbrowser
 import jdatetime
 import speech_recognition as sr
+from translate import translator
+
 
 
 class Ui_MainWindow(object):
@@ -124,9 +126,8 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.run, self.textBrowser)
         MainWindow.setTabOrder(self.textBrowser, self.komack)
         self.textBrowser.setText('')
-        f = open('shahr.txt','a+' , encoding="utf8")
-        
-        if os.lstat("shahr.txt")[6] == 0 :
+        open(f"C:\\Users\\{os.getlogin()}\\Documents\\shahr.txt",'a+' , encoding="utf8")
+        if os.lstat(f"C:\\Users\\{os.getlogin()}\\Documents\\shahr.txt")[6] == 0 :
             self.show_new_window_for_ab_o_hava()
             red_text = "الان یه پنجره باز شده که ازت شهر رو می پرسه لطفا بازش کن"
             self.textBrowser.setHtml(f"<p6 style=\"color:#ff0000;\" > {red_text} </p6>")
@@ -136,7 +137,9 @@ class Ui_MainWindow(object):
         f = open('jok.txt', encoding="utf8")
         joks = f.readlines()
 
-
+    def trans(self, to_lang, text):
+        translator= translator(to_lang=to_lang)
+        return translator.translate(text)
 
           
     def get_audio(self):
@@ -149,7 +152,8 @@ class Ui_MainWindow(object):
             app.processEvents()
             audio = r.listen(source)
             app.processEvents()
-            try:     
+            try:
+                app.processEvents()     
                 voice_U = (r.recognize_google(audio, language= 'fa-IR'))
                 app.processEvents()
                 self.lineEdit.setText(voice_U)
@@ -199,32 +203,26 @@ class Ui_MainWindow(object):
 
     
     def ab_o_hava(self):
-        f = open('shahr.txt','r' , encoding="utf8")
-        shahr = f.read()
-        try:
-            base_url = "http://api.openweathermap.org/data/2.5/weather?"
-            complete_url = base_url + "appid=" + 'd850f7f52bf19300a9eb4b0aa6b80f0d' + "&q=" + shahr 
-            response = requests.get(complete_url)
-            x = response.json()
-
-            if x["cod"] != "404":
-                y = x["main"]
-
-                current_temperature = y["temp"]
-                z = x["weather"]
-                current_temperature = float(current_temperature) -273.15
-                weather_description = z[0]["description"]
-                weather_description_t = (weather_description)
-                hava = (f'الان هوا تو {shahr} {str(current_temperature.__round__(2))} درجه سانتی‌گراده و وضعیت هوا: {str(weather_description_t)}')#" Temperature  = " + str(current_temperature) + "\n description = " + str(weather_description))
-                self.textBrowser.append(hava)
-            else:
-                self.textBrowser.append("شهر شما پیدا نشد")
-        except:
-            self.textBrowser.append('اینترنتت رو دوباره چک کن')
+        self.textBrowser.append('\nوایسا برم آسمون رو نگاه کنم\U0001F601')
+        f = open(f"C:\\Users\\{os.getlogin()}\\Documents\\shahr.txt",'r' , encoding="utf-8")
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+        city = f.read()
+        city = city + " weather"
+        city = city.replace(" ", "+")
+        res = requests.get(
+            f'https://www.google.com/search?q={city}&hl=fa&oq={city}&aqs=chrome.0.35i39l2j0l4j46j69i60.6128j1j7&sourceid=chrome&ie=UTF-8', headers=headers)
+        soup = BeautifulSoup(res.text, 'html.parser')
+        location = soup.select('#wob_loc')[0].getText().strip()
+        time = soup.select('#wob_dts')[0].getText().strip()
+        info = soup.select('#wob_dc')[0].getText().strip()
+        weather = soup.select('#wob_tm')[0].getText().strip()
+        self.textBrowser.append('\n'+location)
+        self.textBrowser.append(time)
+        self.textBrowser.append(info)
+        self.textBrowser.append(weather+"°C")
 
         
-
-
     def site_open(self):
         webbrowser.open_new('http://jahantigh.gigfa.com/')
     def github_open(self):
@@ -258,7 +256,6 @@ class Ui_MainWindow(object):
             self.textBrowser.append(f'\nآی پی تو الان «{self.get_ip()}» هست')
 
         elif 'هوا' in input_U or 'درجه' in input_U or 'i,h' in input_U.lower() or 'nv[i' in input_U.lower():
-            self.textBrowser.append('\nوایسا برم آسمون رو نگاه کنم\U0001F601')
             self.ab_o_hava()
         
         elif 'بازی' in input_U or 'گیم' in input_U or 'fhcd' in input_U.lower() or "'dl" in input_U.lower() or 'game' in input_U.lower():
