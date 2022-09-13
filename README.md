@@ -14,6 +14,7 @@ pip install jdatetime
 pip install speech_recognition
 pip install pygame
 ```
+- next instal [Digi Hekayat Bold.ttf](https://digifonts.ir/wp-content/uploads/edd/2021/04/Digi-Hekayat-www.digifonts.ir_.zip) font
 ## several points!
 - this voice asistant is persian and you should talk in persian! (not english)
 - it has some commands! such as:
